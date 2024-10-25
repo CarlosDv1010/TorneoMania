@@ -35,6 +35,7 @@ export default function Login({ onLogin }) {
         secureTextEntry
       />
       <Button title="Iniciar Sesión" onPress={handleLogin} />
+      
     </View>
   );
 }

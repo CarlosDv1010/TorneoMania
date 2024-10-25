@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
+import 'bootstrap/dist/css/bootstrap.css';
+import * as bs from 'react-bootstrap';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Login from './components/Login';
@@ -54,33 +56,55 @@ export default function App() {
           />
         </Stack.Navigator>
       ) : (
-        <View style={styles.container}>
-          {showRegister ? (
-            <>
-              <Register onRegister={setUser} />
-              <Button title="Ya tengo una cuenta" onPress={toggleRegister} />
-            </>
-          ) : (
-            <>
-              <Login onLogin={setUser} />
-              <Button title="Crear una cuenta" onPress={toggleRegister} />
-            </>
-          )}
-        </View>
+        <div className="container">
+          <bs.Row>
+            <bs.Col md={2}>
+            </bs.Col>
+              <bs.Col md = {8}>
+                <bs.Card>
+                  <bs.CardBody style={{ backgroundColor: '#8f0d0d' }}>
+                    {showRegister ? (
+                      <>
+                        <Register onRegister={setUser} />
+                        <Button title="Ya tengo una cuenta" onPress={toggleRegister} />
+                      </>
+                    ) : (
+                      <>
+                        <Login onLogin={setUser} />
+                        <Text>{"\n"}</Text> {/* Salto de línea */}
+                        <Button title="Crear una cuenta" onPress={toggleRegister} />
+                      </>
+                    )}
+                  </bs.CardBody>
+                </bs.Card>
+              </bs.Col>
+            <bs.Col md={2}>
+            </bs.Col>
+          </bs.Row>
+        </div>
       )}
     </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  fullScreen: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
+    alignItems: 'center',
+    backgroundColor: 'black',
   },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-    textAlign: 'center',
+  centeredCard: {
+    width: '80%',
+    backgroundColor: '#8f0d0d',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  cardBody: {
+    padding: 20,
   },
 });
