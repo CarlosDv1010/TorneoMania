@@ -1,62 +1,127 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { registerUser } from '../services/backendless';
 
-export default function Register({ onRegister }) {
+export default function Register({ onRegister, navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
+  const [isPressed, setIsPressed] = useState(false);
 
   const handleRegister = async () => {
     try {
       const user = await registerUser(email, password, username);
       Alert.alert('Registro exitoso', `Bienvenido, ${user.username}`);
-      onRegister(user); // Llama a onRegister si quieres iniciar sesión automáticamente tras registrarse
+      onRegister(user); // Llama a onRegister si deseas actualizar el estado del usuario
+      navigation.navigate('Home'); // Navegar al menú principal (Home)
     } catch (error) {
       Alert.alert('Error de registro', error.message);
     }
   };
 
   return (
-    <View>
-      <Text style={styles.title}>Registro de Usuario</Text>
+    <View style={styles.container}>
+      <Image source={require('../components/imagenes/logocompleto.png')} style={styles.logo} />
+
+      <Text style={styles.label}>CORREO ELECTRÓNICO</Text>
       <TextInput
         style={styles.input}
         placeholder="Correo Electrónico"
+        placeholderTextColor="#888"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
       />
+
+      <Text style={styles.label}>NOMBRE DE USUARIO</Text>
       <TextInput
         style={styles.input}
         placeholder="Nombre de Usuario"
+        placeholderTextColor="#888"
         value={username}
         onChangeText={setUsername}
       />
+
+      <Text style={styles.label}>CONTRASEÑA</Text>
       <TextInput
         style={styles.input}
         placeholder="Contraseña"
+        placeholderTextColor="#888"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Registrarse" onPress={handleRegister} />
+
+      <TouchableOpacity
+        style={[styles.button, isPressed && styles.buttonPressed]}
+        onPressIn={() => setIsPressed(true)}
+        onPressOut={() => setIsPressed(false)}
+        onPress={handleRegister}
+      >
+        <Text style={styles.buttonText}>Registrarse</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.loginRedirectText}>¿Ya tienes una cuenta? Inicia sesión</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-    textAlign: 'center',
+  container: {
+    flex: 1,
+    backgroundColor: '#000000',
+    alignItems: 'center',
+    padding: 20,
+    justifyContent: 'center',
+  },
+  logo: {
+    width: 200,
+    height: 200,
+    marginBottom: 40,
+    resizeMode: 'contain',
+  },
+  label: {
+    width: '100%',
+    color: '#ffffff',
+    fontSize: 14,
+    marginBottom: 5,
+    marginLeft: 10,
   },
   input: {
+    width: '100%',
     borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
+    borderColor: '#ffffff',
+    padding: 15,
     marginVertical: 10,
-    borderRadius: 5,
+    borderRadius: 25,
+    backgroundColor: '#1a1a1a',
+    color: '#ffffff',
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: '#ffffff',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 25,
+    marginTop: 20,
+    width: '100%',
+    alignItems: 'center',
+  },
+  buttonPressed: {
+    backgroundColor: '#cccccc',
+  },
+  buttonText: {
+    color: '#000000',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  loginRedirectText: {
+    color: '#ffffff',
+    fontSize: 14,
+    marginTop: 20,
+    textDecorationLine: 'underline',
   },
 });

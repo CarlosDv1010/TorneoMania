@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
 import { getNotifications } from '../services/backendless';
 
 export default function NotificationCenter() {
@@ -15,13 +15,17 @@ export default function NotificationCenter() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Centro de Notificaciones</Text>
+      <Text style={styles.title}>NOTIFICACIONES</Text>
       <FlatList
         data={notifications}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.notification}>
-            <Text>{item.message}</Text>
+            <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.icon} />
+            <View style={styles.textContainer}>
+              <Text style={styles.notificationTitle}>{item.title}</Text>
+              <Text style={styles.notificationMessage}>{item.message}</Text>
+            </View>
           </View>
         )}
       />
@@ -31,19 +35,42 @@ export default function NotificationCenter() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
     flex: 1,
+    backgroundColor: '#1a1f3e', // Fondo oscuro similar al de la imagen
+    padding: 20,
   },
   title: {
     fontSize: 24,
-    marginBottom: 10,
+    color: '#ffffff',
+    fontWeight: 'bold',
     textAlign: 'center',
+    marginBottom: 20,
   },
   notification: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2c365d', // Fondo de la notificación similar al diseño
+    borderRadius: 10,
     padding: 15,
-    backgroundColor: '#f9f9f9',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
     marginBottom: 10,
+  },
+  icon: {
+    width: 50,
+    height: 50,
+    borderRadius: 10,
+    marginRight: 15,
+  },
+  textContainer: {
+    flex: 1,
+  },
+  notificationTitle: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  notificationMessage: {
+    color: '#bbbbbb',
+    fontSize: 14,
   },
 });
