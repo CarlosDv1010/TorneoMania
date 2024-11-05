@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { getEnrolledTournaments, getFeaturedTournaments } from '../services/backendless';
+import { useNavigation } from '@react-navigation/native';
 import LogoutButton from './LogoutButton';
 
-export default function Home({ navigation }) {
+export default function Home() {
+  const navigation = useNavigation();
   const [enrolledTournaments, setEnrolledTournaments] = useState([]);
   const [featuredTournaments, setFeaturedTournaments] = useState([]);
 
@@ -22,6 +24,10 @@ export default function Home({ navigation }) {
     setEnrolledTournaments(enrolled);
     setFeaturedTournaments(featured);
   }, []);
+  
+  const handleTournamentPress = (tournament) => {
+    navigation.navigate('TournamentDetails', { tournament });
+  };
 
   return (
     <View style={styles.container}>
@@ -54,16 +60,18 @@ export default function Home({ navigation }) {
           data={featuredTournaments}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <View style={styles.tournamentCard}>
-              <Image source={{ uri: item.image }} style={styles.tournamentImage} />
-              <View style={styles.tournamentInfo}>
-                <Text style={styles.tournamentName}>{item.name}</Text>
-                <Text style={styles.tournamentDescription}>{item.description}</Text>
-                <TouchableOpacity style={styles.registerButton}>
-                  <Text style={styles.registerButtonText}>Registrarse</Text>
-                </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('TournamentsDetail', {tournament: item})}>
+              <View style={styles.tournamentCard}>
+                <Image source={{ uri: item.image }} style={styles.tournamentImage} />
+                <View style={styles.tournamentInfo}>
+                  <Text style={styles.tournamentName}>{item.name}</Text>
+                  <Text style={styles.tournamentDescription}>{item.description}</Text>
+                  <TouchableOpacity style={styles.registerButton}>
+                    <Text style={styles.registerButtonText}>Registrarse</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
+            </TouchableOpacity>
           )}
         />
 
@@ -73,12 +81,12 @@ export default function Home({ navigation }) {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View style={styles.playerCard}>
-              <Image source={{ uri: item.avatar }} style={styles.playerAvatar} />
-              <View style={styles.playerInfo}>
-                <Text style={styles.playerName}>{item.name}</Text>
-                <Text style={styles.playerDetails}>{item.sport} - {item.winRate}% Winrate - {item.gamesPlayed} Games</Text>
-              </View>
+            <Image source={{ uri: item.avatar }} style={styles.playerAvatar} />
+            <View style={styles.playerInfo}>
+              <Text style={styles.playerName}>{item.name}</Text>
+              <Text style={styles.playerDetails}>{item.sport} - {item.winRate}% Winrate - {item.gamesPlayed} Games</Text>
             </View>
+          </View>
           )}
         />
 
