@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Login from './components/Login';
 import Register from './components/Register';
 import Home from './components/Home';
+import TournamentsDetail from './components/TournamentsDetail';
 import NotificationCenter from './components/NotificationCenter';
 import CreateTournament from './components/CreateTournament';
 import TournamentMenu from './components/TournamentMenu';
@@ -58,6 +59,11 @@ export default function App() {
             name="CreateTournament"
             component={CreateTournament}
             options={{ title: 'Crear Torneo' }}
+          />
+          <Stack.Screen 
+            name="TournamentsDetail" 
+            component={TournamentsDetail} 
+            options={{ title: 'Detalle del Torneo' }} 
           />
         </Stack.Navigator>
       ) : (
