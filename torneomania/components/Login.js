@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
-import { loginUser } from '../services/backendless';
 
 export default function Login({ onLogin, navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isPressed, setIsPressed] = useState(false);
 
   const handleLogin = async () => {
+    // Verificación del usuario administrador
+    if (email === 'admin' && password === '123') {
+      Alert.alert('Login exitoso', `Bienvenido, Administrador`);
+      onLogin({ username: 'Administrador', role: 'admin' });
+      return;
+    }
+
     try {
+      // Simulación del inicio de sesión de otros usuarios
       const user = await loginUser(email, password);
       Alert.alert('Login exitoso', `Bienvenido, ${user.username}`);
       onLogin(user);
@@ -42,12 +48,7 @@ export default function Login({ onLogin, navigation }) {
         placeholderTextColor="#888"
       />
       
-      <TouchableOpacity
-        style={[styles.loginButton, isPressed && styles.loginButtonPressed]}
-        onPressIn={() => setIsPressed(true)}
-        onPressOut={() => setIsPressed(false)}
-        onPress={handleLogin}
-      >
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
       </TouchableOpacity>
 
@@ -98,9 +99,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: '100%',
     alignItems: 'center',
-  },
-  loginButtonPressed: {
-    backgroundColor: '#cccccc', // Color del botón cuando se presiona
   },
   loginButtonText: {
     color: '#000000',

@@ -8,7 +8,7 @@ export default function Home({ navigation }) {
   const [featuredTournaments, setFeaturedTournaments] = useState([]);
 
   useEffect(() => {
-    // Simulación de datos con imágenes dummy
+    // Simulación de datos con imágenes dummy para los torneos y jugadores
     const enrolled = [
       { id: '1', name: 'Enigma876', sport: 'Fútbol', winRate: 95, gamesPlayed: 127, avatar: 'https://via.placeholder.com/50' },
       { id: '2', name: 'Elitotrop98', sport: 'Voleibol', winRate: 87, gamesPlayed: 98, avatar: 'https://via.placeholder.com/50' },
@@ -29,7 +29,6 @@ export default function Home({ navigation }) {
       <View style={styles.navbar}>
         <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.logo} />
         <View style={styles.navButtons}>
-          {/* Botón de la campana de notificaciones */}
           <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={styles.notificationIconContainer}>
             <Image source={{ uri: 'https://via.placeholder.com/30' }} style={styles.notificationIcon} />
           </TouchableOpacity>
@@ -43,11 +42,13 @@ export default function Home({ navigation }) {
       </View>
 
       <ScrollView>
-        <Image source={{ uri: 'https://via.placeholder.com/300x150' }} style={styles.banner} />
-        
-        <View style={styles.searchContainer}>
+        {/* Botón para navegar al menú de torneos */}
+        <TouchableOpacity
+          style={styles.searchContainer}
+          onPress={() => navigation.navigate('TournamentMenu')}
+        >
           <Text style={styles.searchText}>BÚSQUEDA DE TORNEOS</Text>
-        </View>
+        </TouchableOpacity>
 
         <Text style={styles.sectionTitle}>Lo más popular</Text>
         <FlatList
@@ -126,11 +127,6 @@ const styles = StyleSheet.create({
     color: '#1a1f3e',
     fontSize: 14,
     fontWeight: 'bold',
-  },
-  banner: {
-    width: '100%',
-    height: 150,
-    marginBottom: 20,
   },
   searchContainer: {
     paddingVertical: 10,

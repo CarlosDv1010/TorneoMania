@@ -6,6 +6,8 @@ import Register from './components/Register';
 import Home from './components/Home';
 import NotificationCenter from './components/NotificationCenter';
 import CreateTournament from './components/CreateTournament';
+import TournamentMenu from './components/TournamentMenu';
+import SportTournaments from './components/SportTournaments';
 import { getCurrentUser } from './services/backendless';
 
 const Stack = createStackNavigator();
@@ -23,6 +25,10 @@ export default function App() {
     fetchCurrentUser();
   }, []);
 
+  const handleLogout = () => {
+    setUser(null);
+  };
+
   return (
     <NavigationContainer>
       {user ? (
@@ -31,8 +37,18 @@ export default function App() {
             name="Home"
             options={{ title: `Bienvenido, ${user.username}` }}
           >
-            {() => <Home user={user} logout={() => setUser(null)} />}
+            {(props) => <Home {...props} user={user} logout={handleLogout} />}
           </Stack.Screen>
+          <Stack.Screen
+            name="TournamentMenu"
+            component={TournamentMenu}
+            options={{ title: 'Torneos' }}
+          />
+          <Stack.Screen
+            name="SportTournaments"
+            component={SportTournaments}
+            options={({ route }) => ({ title: `Torneos de ${route.params.sport}` })}
+          />
           <Stack.Screen
             name="Notifications"
             component={NotificationCenter}

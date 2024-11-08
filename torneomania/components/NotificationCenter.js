@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
-import { getNotifications } from '../services/backendless';
 
 export default function NotificationCenter() {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-    async function fetchNotifications() {
-      const data = await getNotifications();
-      setNotifications(data);
-    }
-    fetchNotifications();
+    // Notificaciones de ejemplo
+    const exampleNotifications = Array.from({ length: 30 }, (_, index) => ({
+      id: index.toString(),
+      title: `Notificación #${index + 1}`,
+      message: `Este es el mensaje de la notificación número ${index + 1}.`,
+      icon: 'https://via.placeholder.com/50',
+    }));
+
+    setNotifications(exampleNotifications);
   }, []);
 
   return (
@@ -21,7 +24,7 @@ export default function NotificationCenter() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.notification}>
-            <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.icon} />
+            <Image source={{ uri: item.icon }} style={styles.icon} />
             <View style={styles.textContainer}>
               <Text style={styles.notificationTitle}>{item.title}</Text>
               <Text style={styles.notificationMessage}>{item.message}</Text>
