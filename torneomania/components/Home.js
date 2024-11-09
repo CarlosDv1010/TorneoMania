@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { getEnrolledTournaments, getFeaturedTournaments } from '../services/backendless';
 import { useNavigation } from '@react-navigation/native';
 import LogoutButton from './LogoutButton';
+import CreateTournamentButton from './CreateTournamentButton';
 
 export default function Home() {
   const navigation = useNavigation();
@@ -10,21 +11,21 @@ export default function Home() {
   const [featuredTournaments, setFeaturedTournaments] = useState([]);
 
   useEffect(() => {
-    // Simulación de datos con imágenes dummy para los torneos y jugadores
-    const enrolled = [
-      { id: '1', name: 'Enigma876', sport: 'Fútbol', winRate: 95, gamesPlayed: 127, avatar: 'https://via.placeholder.com/50' },
-      { id: '2', name: 'Elitotrop98', sport: 'Voleibol', winRate: 87, gamesPlayed: 98, avatar: 'https://via.placeholder.com/50' },
-      { id: '3', name: 'CrateDuL8o', sport: 'Valorant', winRate: 82.5, gamesPlayed: 64, avatar: 'https://via.placeholder.com/50' },
-    ];
-    const featured = [
-      { id: '1', name: 'Copa de Fútbol', description: 'Un torneo emocionante para todos los niveles.', image: 'https://via.placeholder.com/100' },
-      { id: '2', name: 'Voleibol Playa', description: 'Compite en la arena y demuestra tu habilidad.', image: 'https://via.placeholder.com/100' },
-      { id: '3', name: 'Torneo de Valorant', description: 'Demuestra tu destreza en este juego de disparos.', image: 'https://via.placeholder.com/100' },
-    ];
-    setEnrolledTournaments(enrolled);
-    setFeaturedTournaments(featured);
+    const fetchTournaments = async () => {
+      try {
+        const enrolled = await getEnrolledTournaments();
+        const featured = await getFeaturedTournaments();
+        setEnrolledTournaments(enrolled);
+        setFeaturedTournaments(featured);
+      } catch (error) {
+        Alert.alert('Error', 'No se pudieron cargar los torneos');
+        console.error('Error al cargar torneos:', error);
+      }
+    };
+
+    fetchTournaments();
   }, []);
-  
+
   const handleTournamentPress = (tournament) => {
     navigation.navigate('TournamentDetails', { tournament });
   };
@@ -56,14 +57,17 @@ export default function Home() {
           <Text style={styles.searchText}>BÚSQUEDA DE TORNEOS</Text>
         </TouchableOpacity>
 
+        {/* Botón para crear torneo */}
+        <CreateTournamentButton />
+
         <Text style={styles.sectionTitle}>Lo más popular</Text>
         <FlatList
           data={featuredTournaments}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.objectId}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('TournamentsDetail', {tournament: item})}>
+            <TouchableOpacity onPress={() => handleTournamentPress(item)}>
               <View style={styles.tournamentCard}>
-                <Image source={{ uri: item.image }} style={styles.tournamentImage} />
+                <Image source={{ uri: item.sport }} style={styles.tournamentImage} />
                 <View style={styles.tournamentInfo}>
                   <Text style={styles.tournamentName}>{item.name}</Text>
                   <Text style={styles.tournamentDescription}>{item.description}</Text>
@@ -82,12 +86,12 @@ export default function Home() {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View style={styles.playerCard}>
-            <Image source={{ uri: item.avatar }} style={styles.playerAvatar} />
-            <View style={styles.playerInfo}>
-              <Text style={styles.playerName}>{item.name}</Text>
-              <Text style={styles.playerDetails}>{item.sport} - {item.winRate}% Winrate - {item.gamesPlayed} Games</Text>
+              <Image source={{ uri: item.avatar }} style={styles.playerAvatar} />
+              <View style={styles.playerInfo}>
+                <Text style={styles.playerName}>{item.name}</Text>
+                <Text style={styles.playerDetails}>{item.sport} - {item.winRate}% Winrate - {item.gamesPlayed} Games</Text>
+              </View>
             </View>
-          </View>
           )}
         />
 
@@ -96,6 +100,10 @@ export default function Home() {
     </View>
   );
 }
+
+
+
+
 
 const styles = StyleSheet.create({
   container: {

@@ -37,7 +37,7 @@ export async function getEnrolledTournaments() {
 // Obtener torneos destacados
 export async function getFeaturedTournaments() {
   // Lógica para obtener torneos destacados
-  return Backendless.Data.of('Tournaments').find({ where: "featured = true" });
+  return Backendless.Data.of('Tournaments').find({ where: "highlighted = true" });
 }
 
 // Crear torneo

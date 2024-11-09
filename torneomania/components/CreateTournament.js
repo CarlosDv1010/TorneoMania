@@ -1,62 +1,107 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { createTournament } from '../services/backendless';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, StyleSheet, Alert } from 'react-native';
+import TournamentDetailsForm from './TournamentDetailsForm';
+import TournamentSportSelector from './TournamentSportSelector';
+import TournamentDatePicker from './TournamentDatePicker';
+import Backendless from 'backendless';
 
 export default function CreateTournament() {
-  const [name, setName] = useState('');
-  const [sport, setSport] = useState('');
+  const [tournamentName, setTournamentName] = useState('');
+  const [selectedSport, setSelectedSport] = useState('');
+  const [tournamentDate, setTournamentDate] = useState(new Date());
+  const [tournamentDescription, setTournamentDescription] = useState('');
+  const [sportsList, setSportsList] = useState([]);
 
-  const handleCreate = async () => {
-    if (name === '' || sport === '') {
-      Alert.alert('Error', 'Por favor, rellena todos los campos');
+  useEffect(() => {
+    const fetchSports = async () => {
+      try {
+        const sports = await Backendless.Data.of('Sports').find();
+        setSportsList(sports);
+      } catch (error) {
+        Alert.alert('Error', 'No se pudieron cargar los deportes');
+      }
+    };
+
+    fetchSports();
+  }, []);
+
+  const handleCreateTournament = async () => {
+    const selectedSportData = sportsList.find((sport) => sport.name === selectedSport);
+  
+    if (!selectedSportData) {
+      Alert.alert('Error', 'El deporte seleccionado no es válido');
       return;
     }
-
+  
+    if (!tournamentName || !selectedSport || !tournamentDate) {
+      Alert.alert('Error', 'Todos los campos son obligatorios');
+      return;
+    }
+  
+    const tournamentData = {
+      name: tournamentName,
+      date: tournamentDate,
+      description: tournamentDescription,
+      createdAt: new Date(),
+    };
+  
     try {
-      await createTournament({ name, sport });
-      Alert.alert('Torneo creado', `El torneo "${name}" ha sido creado exitosamente`);
-      setName('');
-      setSport('');
+      // Guardar el torneo sin la relación
+      const savedTournament = await Backendless.Data.of('Tournaments').save(tournamentData);
+  
+      // Luego, establece la relación usando setRelation
+      await Backendless.Data.of('Tournaments').setRelation(savedTournament.objectId, 'sport', [selectedSportData.objectId]);
+  
+      Alert.alert('Éxito', 'El torneo se ha creado correctamente');
+      // Limpiar formulario después de la creación
+      setTournamentName('');
+      setSelectedSport('');
+      setTournamentDate(new Date());
+      setTournamentDescription('');
     } catch (error) {
-      Alert.alert('Error al crear torneo', error.message);
+      Alert.alert('Error', 'No se pudo crear el torneo');
+      console.error('Error al crear el torneo: ', error);
     }
   };
+  
+  
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Crear Torneo</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre del Torneo"
-        value={name}
-        onChangeText={setName}
+      <Text style={styles.title}>Crear un Torneo</Text>
+      
+      <TournamentDetailsForm
+        tournamentName={tournamentName}
+        setTournamentName={setTournamentName}
+        tournamentDescription={tournamentDescription}
+        setTournamentDescription={setTournamentDescription}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Deporte"
-        value={sport}
-        onChangeText={setSport}
+
+      <TournamentSportSelector
+        selectedSport={selectedSport}
+        setSelectedSport={setSelectedSport}
+        sportsList={sportsList}
       />
-      <Button title="Crear Torneo" onPress={handleCreate} />
+
+      <TournamentDatePicker
+        tournamentDate={tournamentDate}
+        setTournamentDate={setTournamentDate}
+      />
+
+      <Button title="Crear Torneo" onPress={handleCreateTournament} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
     flex: 1,
+    padding: 20,
+    justifyContent: 'center',
   },
   title: {
     fontSize: 24,
-    marginBottom: 10,
+    marginBottom: 20,
     textAlign: 'center',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginVertical: 10,
-    borderRadius: 5,
   },
 });

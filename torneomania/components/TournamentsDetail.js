@@ -10,7 +10,7 @@ export default function TournamentDetails({ route }) {
   
   return (
     <View style={styles.container}>
-      <Image source={{ uri: tournament.image || tournament.avatar }} style={styles.image} />
+      <Image source={{ uri: tournament.sport.image || tournament.avatar }} style={styles.image} />
       <Text style={styles.title}>{tournament.name}</Text>
       <Text style={styles.description}>{tournament.description || `Deporte: ${tournament.sport}`}</Text>
       {tournament.winRate && (
