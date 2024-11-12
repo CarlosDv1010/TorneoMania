@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { getEnrolledTournaments, getFeaturedTournaments } from '../services/backendless';
+import { getEnrolledTournaments, getFeaturedTournaments, getOrganizedTournaments } from '../services/backendless';
 import { useNavigation } from '@react-navigation/native';
 import LogoutButton from './LogoutButton';
 import CreateTournamentButton from './CreateTournamentButton';
 
 export default function Home() {
   const navigation = useNavigation();
-  const [enrolledTournaments, setEnrolledTournaments] = useState([]);
+  const [organizedTournaments, setOrganizedTorunaments] = useState([]);
   const [featuredTournaments, setFeaturedTournaments] = useState([]);
+  const [enrolledTournaments, setEnrolledTournaments] = useState([]);
 
   useEffect(() => {
     const fetchTournaments = async () => {
       try {
         const enrolled = await getEnrolledTournaments();
+        const organized = await getOrganizedTournaments();
         const featured = await getFeaturedTournaments();
-        setEnrolledTournaments(enrolled);
+        setOrganizedTorunaments(organized);
         setFeaturedTournaments(featured);
+        setEnrolledTournaments(enrolled);
+        
       } catch (error) {
         Alert.alert('Error', 'No se pudieron cargar los torneos');
         console.error('Error al cargar torneos:', error);
@@ -71,14 +75,62 @@ export default function Home() {
                 <View style={styles.tournamentInfo}>
                   <Text style={styles.tournamentName}>{item.name}</Text>
                   <Text style={styles.tournamentDescription}>{item.description}</Text>
+                  <TouchableOpacity
+                  style={styles.registerButton}
+                  onPress={() => {
+                    const tournamentId = item.objectId; 
+                    navigation.navigate('TournamentRegistration', { tournamentId });
+                  }}
+                >
+                  <Text style={styles.registerButtonText}>Registrarse</Text>
+                </TouchableOpacity>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+
+        <Text style={styles.sectionTitle}>Mis Torneos Creados</Text>
+        <FlatList
+          data={organizedTournaments}
+          keyExtractor={(item) => item.objectId}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleTournamentPress(item)}>
+              <View style={styles.tournamentCard}>
+                <Image source={{ uri: item.sport }} style={styles.tournamentImage} />
+                <View style={styles.tournamentInfo}>
+                  <Text style={styles.tournamentName}>{item.name}</Text>
+                  <Text style={styles.tournamentDescription}>{item.description}</Text>
                   <TouchableOpacity style={styles.registerButton}>
-                    <Text style={styles.registerButtonText}>Registrarse</Text>
+                    <Text style={styles.registerButtonText}>Ver información</Text>
                   </TouchableOpacity>
                 </View>
               </View>
             </TouchableOpacity>
           )}
         />
+
+        <Text style={styles.sectionTitle}>Mis Torneos</Text>
+        <FlatList
+          data={enrolledTournaments}
+          keyExtractor={(item) => item.objectId}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleTournamentPress(item)}>
+              <View style={styles.tournamentCard}>
+                <Image source={{ uri: item.sport }} style={styles.tournamentImage} />
+                <View style={styles.tournamentInfo}>
+                  <Text style={styles.tournamentName}>{item.name}</Text>
+                  <Text style={styles.tournamentDescription}>{item.description}</Text>
+                  <TouchableOpacity style={styles.registerButton}>
+                    <Text style={styles.registerButtonText}>Ver información</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+
+        
 
         <Text style={styles.sectionTitle}>Ranking de jugadores</Text>
         <FlatList

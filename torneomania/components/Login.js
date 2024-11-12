@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import { loginUser } from '../services/backendless';
 
 export default function Login({ onLogin, navigation }) {
   const [email, setEmail] = useState('');

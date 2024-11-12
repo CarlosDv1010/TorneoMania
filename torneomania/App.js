@@ -9,6 +9,7 @@ import NotificationCenter from './components/NotificationCenter';
 import CreateTournament from './components/CreateTournament';
 import TournamentMenu from './components/TournamentMenu';
 import SportTournaments from './components/SportTournaments';
+import TournamentRegistration from './components/TournamentRegistration';
 import { getCurrentUser } from './services/backendless';
 
 const Stack = createStackNavigator();
@@ -54,6 +55,11 @@ export default function App() {
             name="Notifications"
             component={NotificationCenter}
             options={{ title: 'Notificaciones' }}
+          />
+          <Stack.Screen
+          name="TournamentRegistration"
+          component={TournamentRegistration}
+          options={{ title: 'Detalles del Torneo' }}
           />
           <Stack.Screen
             name="CreateTournament"

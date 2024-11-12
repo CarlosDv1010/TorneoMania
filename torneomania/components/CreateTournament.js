@@ -4,6 +4,7 @@ import TournamentDetailsForm from './TournamentDetailsForm';
 import TournamentSportSelector from './TournamentSportSelector';
 import TournamentDatePicker from './TournamentDatePicker';
 import Backendless from 'backendless';
+import { getCurrentUser } from '../services/backendless'; // Asegúrate de que esta función está disponible
 
 export default function CreateTournament() {
   const [tournamentName, setTournamentName] = useState('');
@@ -27,31 +28,39 @@ export default function CreateTournament() {
 
   const handleCreateTournament = async () => {
     const selectedSportData = sportsList.find((sport) => sport.name === selectedSport);
-  
+
     if (!selectedSportData) {
       Alert.alert('Error', 'El deporte seleccionado no es válido');
       return;
     }
-  
+
     if (!tournamentName || !selectedSport || !tournamentDate) {
       Alert.alert('Error', 'Todos los campos son obligatorios');
       return;
     }
-  
-    const tournamentData = {
-      name: tournamentName,
-      date: tournamentDate,
-      description: tournamentDescription,
-      createdAt: new Date(),
-    };
-  
+
     try {
-      // Guardar el torneo sin la relación
+      // Obtener el usuario actual
+      const currentUser = await getCurrentUser();
+      if (!currentUser) {
+        Alert.alert('Error', 'No se pudo obtener el usuario actual');
+        return;
+      }
+
+      const tournamentData = {
+        name: tournamentName,
+        date: tournamentDate,
+        description: tournamentDescription,
+        createdAt: new Date(),
+        ownerId: currentUser.objectId, // Asignar el usuario actual como owner
+      };
+
+      // Guardar el torneo
       const savedTournament = await Backendless.Data.of('Tournaments').save(tournamentData);
-  
-      // Luego, establece la relación usando setRelation
+
+      // Luego, establece la relación con el deporte usando setRelation
       await Backendless.Data.of('Tournaments').setRelation(savedTournament.objectId, 'sport', [selectedSportData.objectId]);
-  
+
       Alert.alert('Éxito', 'El torneo se ha creado correctamente');
       // Limpiar formulario después de la creación
       setTournamentName('');
