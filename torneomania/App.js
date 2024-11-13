@@ -10,6 +10,7 @@ import CreateTournament from './components/CreateTournament';
 import TournamentMenu from './components/TournamentMenu';
 import SportTournaments from './components/SportTournaments';
 import TournamentRegistration from './components/TournamentRegistration';
+import Profile from './components/Profile';  // Import Profile component
 import { getCurrentUser } from './services/backendless';
 
 const Stack = createStackNavigator();
@@ -57,9 +58,9 @@ export default function App() {
             options={{ title: 'Notificaciones' }}
           />
           <Stack.Screen
-          name="TournamentRegistration"
-          component={TournamentRegistration}
-          options={{ title: 'Detalles del Torneo' }}
+            name="TournamentRegistration"
+            component={TournamentRegistration}
+            options={{ title: 'Detalles del Torneo' }}
           />
           <Stack.Screen
             name="CreateTournament"
@@ -70,6 +71,12 @@ export default function App() {
             name="TournamentsDetail" 
             component={TournamentsDetail} 
             options={{ title: 'Detalle del Torneo' }} 
+          />
+          {/* Add Profile screen */}
+          <Stack.Screen
+            name="Profile"
+            component={Profile}
+            options={{ title: 'Perfil' }}
           />
         </Stack.Navigator>
       ) : (
