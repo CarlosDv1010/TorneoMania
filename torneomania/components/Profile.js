@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 
 const Profile = ({ user, logout }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Perfil de Usuario</Text>
-      
+
+      {/* Display user details */}
       <View style={styles.profileContainer}>
         <Text style={styles.label}>Nombre de Usuario:</Text>
         <Text style={styles.info}>{user.username}</Text>
@@ -16,7 +17,8 @@ const Profile = ({ user, logout }) => {
         <Text style={styles.info}>{user.email}</Text>
       </View>
 
-      <Button title="Cerrar sesión" onPress={logout} color="#f00" />
+      {/* Logout button */}
+      <Button title="Cerrar Sesión" onPress={logout} style={styles.logoutButton} />
     </View>
   );
 };
@@ -24,27 +26,31 @@ const Profile = ({ user, logout }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#1a1f3e',
     padding: 20,
   },
   title: {
     fontSize: 24,
+    color: '#ffffff',
     fontWeight: 'bold',
     marginBottom: 20,
   },
   profileContainer: {
     marginBottom: 10,
-    width: '100%',
   },
   label: {
+    color: '#ffffff',
     fontSize: 16,
-    fontWeight: 'bold',
   },
   info: {
+    color: '#aaaaaa',
     fontSize: 16,
-    marginBottom: 10,
-    color: 'gray',
+    marginTop: 5,
+  },
+  logoutButton: {
+    marginTop: 20,
+    backgroundColor: '#4CAF50',
+    borderRadius: 5,
   },
 });
 

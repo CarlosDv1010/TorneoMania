@@ -64,6 +64,14 @@ export default function Home() {
         {/* Botón para crear torneo */}
         <CreateTournamentButton />
 
+        {/* Botón para ir a perfil */}
+        <TouchableOpacity
+          style={styles.searchContainer}
+          onPress={() => navigation.navigate('Profile')}
+        >
+          <Text style={styles.searchText}>Ir al Perfil</Text>
+        </TouchableOpacity>
+
         <Text style={styles.sectionTitle}>Lo más popular</Text>
         <FlatList
           data={featuredTournaments}
@@ -76,14 +84,14 @@ export default function Home() {
                   <Text style={styles.tournamentName}>{item.name}</Text>
                   <Text style={styles.tournamentDescription}>{item.description}</Text>
                   <TouchableOpacity
-                  style={styles.registerButton}
-                  onPress={() => {
-                    const tournamentId = item.objectId; 
-                    navigation.navigate('TournamentRegistration', { tournamentId });
-                  }}
-                >
-                  <Text style={styles.registerButtonText}>Registrarse</Text>
-                </TouchableOpacity>
+                    style={styles.registerButton}
+                    onPress={() => {
+                      const tournamentId = item.objectId; 
+                      navigation.navigate('TournamentRegistration', { tournamentId });
+                    }}
+                  >
+                    <Text style={styles.registerButtonText}>Registrarse</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </TouchableOpacity>
@@ -130,8 +138,6 @@ export default function Home() {
           )}
         />
 
-        
-
         <Text style={styles.sectionTitle}>Ranking de jugadores</Text>
         <FlatList
           data={enrolledTournaments}
@@ -152,10 +158,6 @@ export default function Home() {
     </View>
   );
 }
-
-
-
-
 
 const styles = StyleSheet.create({
   container: {
