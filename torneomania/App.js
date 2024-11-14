@@ -11,6 +11,7 @@ import TournamentMenu from './components/TournamentMenu';
 import SportTournaments from './components/SportTournaments';
 import TournamentRegistration from './components/TournamentRegistration';
 import { getCurrentUser } from './services/backendless';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Stack = createStackNavigator();
 

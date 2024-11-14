@@ -3,6 +3,7 @@ import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ScrollView, 
 import { getEnrolledTournaments, getFeaturedTournaments, getOrganizedTournaments } from '../services/backendless';
 import { useNavigation } from '@react-navigation/native';
 import LogoutButton from './LogoutButton';
+import SubscriptionsMenu from './SubscriptionsMenu';
 import CreateTournamentButton from './CreateTournamentButton';
 
 export default function Home() {
@@ -51,7 +52,8 @@ export default function Home() {
           </TouchableOpacity>
         </View>
       </View>
-
+      
+      <SubscriptionsMenu show={true}></SubscriptionsMenu>
       <ScrollView>
         {/* Botón para navegar al menú de torneos */}
         <TouchableOpacity
@@ -150,6 +152,8 @@ export default function Home() {
         <LogoutButton />
       </ScrollView>
     </View>
+    
+    
   );
 }
 
