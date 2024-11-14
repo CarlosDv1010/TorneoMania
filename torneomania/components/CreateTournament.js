@@ -1,17 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Picker, CheckBox } from 'react-native';
 import TournamentDetailsForm from './TournamentDetailsForm';
 import TournamentSportSelector from './TournamentSportSelector';
 import TournamentDatePicker from './TournamentDatePicker';
 import Backendless from 'backendless';
-import { getCurrentUser } from '../services/backendless'; // Asegúrate de que esta función está disponible
+import { getCurrentUser } from '../services/backendless';
 
 export default function CreateTournament() {
   const [tournamentName, setTournamentName] = useState('');
   const [selectedSport, setSelectedSport] = useState('');
-  const [tournamentDate, setTournamentDate] = useState(new Date());
   const [tournamentDescription, setTournamentDescription] = useState('');
   const [sportsList, setSportsList] = useState([]);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [prize, setPrize] = useState(false);
+  const [individualCompetition, setIndividualCompetition] = useState(false);
+  const [groupCompetition, setGroupCompetition] = useState(false);
+  const [groupCount, setGroupCount] = useState(8);
+  const [participantsPerGroup, setParticipantsPerGroup] = useState(11);
+  const [teamSize, setTeamSize] = useState(5);
+  const prizeOptions = ["Trofeo", "Medallas", "Certificados", "Premio en efectivo", "Producto de patrocinador"];
 
   useEffect(() => {
     const fetchSports = async () => {
@@ -27,20 +35,12 @@ export default function CreateTournament() {
   }, []);
 
   const handleCreateTournament = async () => {
-    const selectedSportData = sportsList.find((sport) => sport.name === selectedSport);
-
-    if (!selectedSportData) {
-      Alert.alert('Error', 'El deporte seleccionado no es válido');
-      return;
-    }
-
-    if (!tournamentName || !selectedSport || !tournamentDate) {
+    if (!tournamentName || !selectedSport || !startDate || !endDate) {
       Alert.alert('Error', 'Todos los campos son obligatorios');
       return;
     }
 
     try {
-      // Obtener el usuario actual
       const currentUser = await getCurrentUser();
       if (!currentUser) {
         Alert.alert('Error', 'No se pudo obtener el usuario actual');
@@ -49,36 +49,44 @@ export default function CreateTournament() {
 
       const tournamentData = {
         name: tournamentName,
-        date: tournamentDate,
+        startDate,
+        endDate,
         description: tournamentDescription,
+        prize,
+        individualCompetition,
+        groupCompetition,
+        groupCount,
+        participantsPerGroup,
+        teamSize,
         createdAt: new Date(),
-        ownerId: currentUser.objectId, // Asignar el usuario actual como owner
+        ownerId: currentUser.objectId,
       };
 
-      // Guardar el torneo
       const savedTournament = await Backendless.Data.of('Tournaments').save(tournamentData);
+      const selectedSportData = sportsList.find((sport) => sport.name === selectedSport);
 
-      // Luego, establece la relación con el deporte usando setRelation
       await Backendless.Data.of('Tournaments').setRelation(savedTournament.objectId, 'sport', [selectedSportData.objectId]);
 
       Alert.alert('Éxito', 'El torneo se ha creado correctamente');
-      // Limpiar formulario después de la creación
       setTournamentName('');
       setSelectedSport('');
-      setTournamentDate(new Date());
       setTournamentDescription('');
+      setPrize(false);
+      setIndividualCompetition(false);
+      setGroupCompetition(false);
+      setGroupCount(8);
+      setParticipantsPerGroup(11);
+      setTeamSize(5);
     } catch (error) {
       Alert.alert('Error', 'No se pudo crear el torneo');
       console.error('Error al crear el torneo: ', error);
     }
   };
-  
-  
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Crear un Torneo</Text>
-      
+
       <TournamentDetailsForm
         tournamentName={tournamentName}
         setTournamentName={setTournamentName}
@@ -92,10 +100,91 @@ export default function CreateTournament() {
         sportsList={sportsList}
       />
 
+      <Text style={styles.label}>Fecha de Inicio</Text>
       <TournamentDatePicker
-        tournamentDate={tournamentDate}
-        setTournamentDate={setTournamentDate}
+        tournamentDate={startDate}
+        setTournamentDate={setStartDate}
       />
+
+      <Text style={styles.label}>Fecha de Cierre</Text>
+      <TournamentDatePicker
+        tournamentDate={endDate}
+        setTournamentDate={setEndDate}
+      />
+
+      <Text style={styles.label}>Seleccione</Text>
+      <View style={styles.checkboxContainer}>
+        <CheckBox
+          value={prize}
+          onValueChange={setPrize}
+        />
+        <Text style={styles.checkboxLabel}>Premio del Torneo</Text>
+      </View>
+
+      {prize && (
+        <Picker
+          selectedValue={prize}
+          onValueChange={(itemValue) => setPrize(itemValue)}
+          style={styles.picker}
+        >
+          {prizeOptions.map((prizeOption, index) => (
+            <Picker.Item key={index} label={prizeOption} value={prizeOption} />
+          ))}
+        </Picker>
+      )}
+
+      <View style={styles.checkboxContainer}>
+        <CheckBox
+          value={individualCompetition}
+          onValueChange={setIndividualCompetition}
+        />
+        <Text style={styles.checkboxLabel}>Competidor singular</Text>
+      </View>
+
+      <View style={styles.checkboxContainer}>
+        <CheckBox
+          value={groupCompetition}
+          onValueChange={setGroupCompetition}
+        />
+        <Text style={styles.checkboxLabel}>Competencia grupal</Text>
+      </View>
+
+      {groupCompetition && (
+        <>
+          <Text style={styles.label}>Tu torneo es para más de uno? Selecciona el número de integrantes por equipo:</Text>
+          <Picker
+            selectedValue={teamSize}
+            onValueChange={(itemValue) => setTeamSize(itemValue)}
+            style={styles.picker}
+          >
+            {[...Array(20).keys()].map(i => (
+              <Picker.Item key={i} label={`${i + 1}`} value={i + 1} />
+            ))}
+          </Picker>
+
+          <Text style={styles.label}>Cantidad de grupos</Text>
+          <Picker
+            selectedValue={groupCount}
+            onValueChange={(itemValue) => setGroupCount(itemValue)}
+            style={styles.picker}
+          >
+            {[...Array(16).keys()].map(i => (
+              <Picker.Item key={i} label={`${i + 1}`} value={i + 1} />
+            ))}
+          </Picker>
+
+          <Text style={styles.label}>Participantes por grupo</Text>
+          <Picker
+            selectedValue={participantsPerGroup}
+            onValueChange={(itemValue) => setParticipantsPerGroup(itemValue)}
+            style={styles.picker}
+          >
+            {[...Array(20).keys()].map(i => (
+              <Picker.Item key={i} label={`${i + 1}`} value={i + 1} />
+            ))}
+          </Picker>
+        </>
+      )}
 
       <Button title="Crear Torneo" onPress={handleCreateTournament} />
     </View>
@@ -107,10 +196,40 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: 'center',
+    backgroundColor: '#1A2731', // Fondo oscuro
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
     textAlign: 'center',
+    color: '#FFFFFF',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#FFFFFF',
+    padding: 10,
+    marginVertical: 10,
+    borderRadius: 5,
+    backgroundColor: '#FFFFFF',
+  },
+  label: {
+    color: '#FFFFFF',
+    marginTop: 10,
+    fontWeight: 'bold',
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  checkboxLabel: {
+    color: '#FFFFFF',
+    marginLeft: 8,
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    backgroundColor: '#FFFFFF',
+    marginVertical: 10,
   },
 });

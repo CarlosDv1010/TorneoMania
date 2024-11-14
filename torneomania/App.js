@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Login from './components/Login';
@@ -10,6 +10,7 @@ import CreateTournament from './components/CreateTournament';
 import TournamentMenu from './components/TournamentMenu';
 import SportTournaments from './components/SportTournaments';
 import TournamentRegistration from './components/TournamentRegistration';
+import Profile from './components/Profile';  // Import Profile component
 import { getCurrentUser } from './services/backendless';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -58,9 +59,9 @@ export default function App() {
             options={{ title: 'Notificaciones' }}
           />
           <Stack.Screen
-          name="TournamentRegistration"
-          component={TournamentRegistration}
-          options={{ title: 'Detalles del Torneo' }}
+            name="TournamentRegistration"
+            component={TournamentRegistration}
+            options={{ title: 'Detalles del Torneo' }}
           />
           <Stack.Screen
             name="CreateTournament"
@@ -72,6 +73,12 @@ export default function App() {
             component={TournamentsDetail} 
             options={{ title: 'Detalle del Torneo' }} 
           />
+          <Stack.Screen
+            name="Profile"
+            options={{ title: 'Perfil' }}
+          >
+            {(props) => <Profile {...props} user={user} logout={handleLogout} />}
+          </Stack.Screen>
         </Stack.Navigator>
       ) : (
         <Stack.Navigator>
