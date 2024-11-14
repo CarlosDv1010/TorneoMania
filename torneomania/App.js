@@ -72,12 +72,12 @@ export default function App() {
             component={TournamentsDetail} 
             options={{ title: 'Detalle del Torneo' }} 
           />
-          {/* Add Profile screen */}
           <Stack.Screen
             name="Profile"
-            component={Profile}
             options={{ title: 'Perfil' }}
-          />
+          >
+            {(props) => <Profile {...props} user={user} logout={handleLogout} />}
+          </Stack.Screen>
         </Stack.Navigator>
       ) : (
         <Stack.Navigator>
