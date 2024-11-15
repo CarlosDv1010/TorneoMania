@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Login from './components/Login';
 import Register from './components/Register';
+import LoginAnticipado from './components/LoginAnticipado';
 import Home from './components/Home';
 import TournamentsDetail from './components/TournamentsDetail';
 import NotificationCenter from './components/NotificationCenter';
@@ -82,6 +83,12 @@ export default function App() {
         </Stack.Navigator>
       ) : (
         <Stack.Navigator>
+          <Stack.Screen
+            name="LoginAnticipado"
+            options={{ headerShown: false }}
+          >
+            {(props) => <LoginAnticipado {...props} onRegister={setUser} />}
+          </Stack.Screen>
           <Stack.Screen
             name="Login"
             options={{ headerShown: false }}
