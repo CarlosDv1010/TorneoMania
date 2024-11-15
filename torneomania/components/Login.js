@@ -56,6 +56,10 @@ export default function Login({ onLogin, navigation }) {
       <TouchableOpacity onPress={() => navigation.navigate('Register')}>
         <Text style={styles.registerText}>¿No tienes cuenta? Regístrate</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate('LoginAnticipado')}>
+        <Text style={styles.registerText}>¿Quieres acceder al Preview? Clic aquí</Text>
+      </TouchableOpacity>
     </View>
   );
 }

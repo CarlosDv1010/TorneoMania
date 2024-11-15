@@ -10,7 +10,9 @@ export default function Register({ onRegister, navigation }) {
 
   const handleRegister = async () => {
     try {
-      const user = await registerUser(email, password, username);
+      await registerUser(email, password, username);
+      const user = await loginUser(email, password); // Iniciar sesión automáticamente
+      console.log("Usuario:", user);
       Alert.alert('Registro exitoso', `Bienvenido, ${user.username}`);
       onRegister(user); // Llama a onRegister si deseas actualizar el estado del usuario
       navigation.navigate('Home'); // Navegar al menú principal (Home)
@@ -65,6 +67,9 @@ export default function Register({ onRegister, navigation }) {
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <Text style={styles.loginRedirectText}>¿Ya tienes una cuenta? Inicia sesión</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('LoginAnticipado')}>
+        <Text style={styles.registerText}>¿Quieres acceder al Preview? Clic aquí</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -117,6 +122,12 @@ const styles = StyleSheet.create({
     color: '#000000',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  registerText: {
+    color: '#ffffff',
+    fontSize: 14,
+    marginTop: 20,
+    textDecorationLine: 'underline',
   },
   loginRedirectText: {
     color: '#ffffff',

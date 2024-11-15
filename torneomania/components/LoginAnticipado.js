@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
-import { registerUser } from '../services/backendless';
+import { loginUser, registerUser } from '../services/backendless';
 
 export default function LoginAnticipado({ onRegister, navigation }) {
   const [email, setEmail] = useState('');
   const [isPressed, setIsPressed] = useState(false);
 
-  const handleRegister = async () => {
+  const handleRegisterAnticipado = async () => {
      // Configuramos el username y password predeterminados
     const username = email; // El username será el email ingresado
     const password = "defaultPassword123"; // Contraseña predeterminada
     console.log("Email:", email, "Username:", username, "Password:", password);
 
     try {
-      const user = await registerUser(email, password, username);
+      await registerUser(email, password, username);
+      const user = await loginUser(email, password); // Iniciar sesión automáticamente
+      console.log("Usuario:", user);
       Alert.alert('Registro exitoso', `Bienvenido, ${user.username}`);
       onRegister(user); // Llama a onRegister si deseas actualizar el estado del usuario
       navigation.navigate('Home'); // Navegar al menú principal (Home)
@@ -21,7 +23,6 @@ export default function LoginAnticipado({ onRegister, navigation }) {
       Alert.alert('Error de registro', error.message);
     }
   };
-  
 
   return (
     <View style={styles.container}>
@@ -41,7 +42,7 @@ export default function LoginAnticipado({ onRegister, navigation }) {
       <TouchableOpacity style={[styles.button, isPressed && styles.buttonPressed]}
         onPressIn={() => setIsPressed(true)}
         onPressOut={() => setIsPressed(false)}
-        onPress={handleRegister}>
+        onPress={handleRegisterAnticipado}>
         <Text style={styles.loginButtonText}>Acceder al Preview</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>

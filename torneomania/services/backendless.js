@@ -25,7 +25,9 @@ export async function registerUser(email, password, username) {
   user.password = password;
   user.username = username;
 
-  return Backendless.UserService.register(user);
+  const usuario = Backendless.UserService.register(user);
+
+  return usuario;
 }
 
 // Obtener detalles del torneo, incluyendo equipos y cupos disponibles
