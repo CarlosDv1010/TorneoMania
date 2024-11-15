@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, FlatList, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
 const sports = [
   { id: '1', name: 'Fútbol', emoji: '⚽️' },
@@ -13,17 +13,17 @@ const sports = [
 ];
 
 const tournaments = {
-  Fútbol: Array(10).fill({ name: 'Torneo de Fútbol', image: 'https://via.placeholder.com/100' }),
-  Basketball: Array(10).fill({ name: 'Torneo de Basketball', image: 'https://via.placeholder.com/100' }),
-  Tenis: Array(10).fill({ name: 'Torneo de Tenis', image: 'https://via.placeholder.com/100' }),
+  Fútbol: Array(30).fill({ name: 'Torneo de Fútbol', image: 'https://via.placeholder.com/100' }),
+  Basketball: Array(20).fill({ name: 'Torneo de Basketball', image: 'https://via.placeholder.com/100' }),
+  Tenis: Array(15).fill({ name: 'Torneo de Tenis', image: 'https://via.placeholder.com/100' }),
   Voleibol: Array(10).fill({ name: 'Torneo de Voleibol', image: 'https://via.placeholder.com/100' }),
-  Balonmano: Array(10).fill({ name: 'Torneo de Balonmano', image: 'https://via.placeholder.com/100' }),
-  'Juegos de mesa': Array(10).fill({ name: 'Torneo de Juegos de Mesa', image: 'https://via.placeholder.com/100' }),
-  eSports: Array(10).fill({ name: 'Torneo de eSports', image: 'https://via.placeholder.com/100' }),
-  Otros: Array(10).fill({ name: 'Torneo de Otros', image: 'https://via.placeholder.com/100' }),
+  Balonmano: Array(5).fill({ name: 'Torneo de Balonmano', image: 'https://via.placeholder.com/100' }), 
+  'Juegos de mesa': Array(5).fill({ name: 'Torneo de Juegos de Mesa', image: 'https://via.placeholder.com/100' }), 
+  eSports: Array(10).fill({ name: 'Torneo de eSports', image: 'https://via.placeholder.com/100' }), 
+  Otros: Array(10).fill({ name: 'Torneo de Otros', image: 'https://via.placeholder.com/100' }), 
 };
 
-export default function TournamentMenu({ navigation }) {
+export default function TournamentMenu() {
   const [selectedSport, setSelectedSport] = useState('Todos');
 
   const handleFilterPress = (sport) => {
@@ -35,14 +35,18 @@ export default function TournamentMenu({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Logo en la barra superior */}
+      {/* Barra de navegación */}
       <View style={styles.navbar}>
         <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.logo} />
         <Text style={styles.title}>Torneos</Text>
       </View>
 
       {/* Menú de filtros */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterMenu}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.filterMenu}
+      >
         <TouchableOpacity
           style={[
             styles.filterButton,
@@ -66,19 +70,19 @@ export default function TournamentMenu({ navigation }) {
         ))}
       </ScrollView>
 
-      {/* Lista de torneos */}
-      <FlatList
-        data={filteredTournaments}
-        keyExtractor={(item, index) => index.toString()}
-        numColumns={3}
-        renderItem={({ item }) => (
-          <View style={styles.tournamentCard}>
-            <Image source={{ uri: item.image }} style={styles.tournamentImage} />
-            <Text style={styles.tournamentName}>{item.name}</Text>
+      {/* Contenedor con scroll para los torneos */}
+      <View style={styles.tournamentContainer}>
+        <ScrollView>
+          <View style={styles.tournamentList}>
+            {filteredTournaments.map((item, index) => (
+              <View key={index.toString()} style={styles.tournamentCard}>
+                <Image source={{ uri: item.image }} style={styles.tournamentImage} />
+                <Text style={styles.tournamentName}>{item.name}</Text>
+              </View>
+            ))}
           </View>
-        )}
-        contentContainerStyle={styles.tournamentList}
-      />
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -105,15 +109,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   filterMenu: {
-    flexDirection: 'row',
-    paddingVertical: 10,
-    paddingHorizontal: 5,
+    paddingVertical: 5,
     backgroundColor: '#1a1f3e',
+    maxHeight: 100,
   },
   filterButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 44,
+    borderRadius: 15,
     backgroundColor: '#2c365d',
     marginHorizontal: 5,
     alignItems: 'center',
@@ -124,12 +127,19 @@ const styles = StyleSheet.create({
   },
   filterText: {
     color: '#ffffff',
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: 'bold',
   },
-  tournamentList: {
+  tournamentContainer: {
+    flex: 1,
+    marginVertical: 10,
     paddingHorizontal: 10,
-    paddingTop: 10,
+    maxHeight: 400,
+  },
+  tournamentList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   tournamentCard: {
     backgroundColor: '#2c365d',
@@ -137,18 +147,18 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 5,
     alignItems: 'center',
-    width: '30%', // Ajuste para mostrar 3 columnas
+    width: '30%',
   },
   tournamentImage: {
-    width: 100,
-    height: 100,
+    width: 80,
+    height: 80,
     borderRadius: 10,
   },
   tournamentName: {
     color: '#ffffff',
     fontSize: 14,
     fontWeight: 'bold',
-    marginTop: 5,
     textAlign: 'center',
+    marginTop: 5,
   },
 });
