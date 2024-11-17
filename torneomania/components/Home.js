@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { getEnrolledTournaments, getFeaturedTournaments, getOrganizedTournaments } from '../services/backendless';
+import { getEnrolledTournaments, getFeaturedTournaments, getOrganizedTournaments, getSport } from '../services/backendless';
 import { useNavigation } from '@react-navigation/native';
 import LogoutButton from './LogoutButton';
 import SubscriptionsMenu from './SubscriptionsMenu';
@@ -11,6 +11,7 @@ export default function Home({ user, handleLogout, navigation }) {
   const [featuredTournaments, setFeaturedTournaments] = useState([]);
   const [enrolledTournaments, setEnrolledTournaments] = useState([]);
 
+  
   useEffect(() => {
     const fetchTournaments = async () => {
       try {
@@ -86,7 +87,7 @@ export default function Home({ user, handleLogout, navigation }) {
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handleTournamentPress(item)}>
               <View style={styles.tournamentCard}>
-                <Image source={{ uri: item.sport }} style={styles.tournamentImage} />
+                <Image source={{ uri: item.image }} style={styles.tournamentImage} />
                 <View style={styles.tournamentInfo}>
                   <Text style={styles.tournamentName}>{item.name}</Text>
                   <Text style={styles.tournamentDescription}>{item.description}</Text>

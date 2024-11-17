@@ -158,6 +158,11 @@ export async function getFeaturedTournaments() {
   return Backendless.Data.of('Tournaments').find({ where: "highlighted = true" });
 }
 
+//
+export async function getSport(sportId) {
+  return Backendless.Data.of('Sports').findById(sportId);
+}
+
 // Crear torneo
 export async function createTournament(tournamentData) {
   return Backendless.Data.of('Tournaments').save(tournamentData);
