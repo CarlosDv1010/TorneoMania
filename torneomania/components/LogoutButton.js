@@ -1,29 +1,29 @@
-import React from 'react';
-import { Button, Alert } from 'react-native';
+// LogoutButton.js
+import React, { useState } from 'react';
+import { Button, Alert, ActivityIndicator, View } from 'react-native';
 import { logoutUser } from '../services/backendless';
-import { useNavigation } from '@react-navigation/native';
-import { CommonActions } from '@react-navigation/native';
 
-export default function LogoutButton() {
-  const navigation = useNavigation();
+export default function LogoutButton({ onLogout }) {
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogout = async () => {
+    setIsLoading(true);
     try {
       await logoutUser();
       Alert.alert('Sesión cerrada');
-      
-      // Reinicia el stack de navegación y redirige a Login
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'Login' }],
-        })
-      );
-      
+      onLogout(); // Llamamos a la función pasada como prop
     } catch (error) {
-      Alert.alert('Error al cerrar sesión', error.message);
+      Alert.alert('Error al cerrar sesión', error?.message || 'Inténtalo de nuevo más tarde.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  return <Button title="Cerrar Sesión" onPress={handleLogout} />;
+  return isLoading ? (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <ActivityIndicator size="large" color="#0000ff" />
+    </View>
+  ) : (
+    <Button title="Cerrar Sesión" onPress={handleLogout} />
+  );
 }

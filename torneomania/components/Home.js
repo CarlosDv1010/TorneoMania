@@ -6,8 +6,7 @@ import LogoutButton from './LogoutButton';
 import SubscriptionsMenu from './SubscriptionsMenu';
 import CreateTournamentButton from './CreateTournamentButton';
 
-export default function Home() {
-  const navigation = useNavigation();
+export default function Home({ user, handleLogout, navigation }) {
   const [organizedTournaments, setOrganizedTorunaments] = useState([]);
   const [featuredTournaments, setFeaturedTournaments] = useState([]);
   const [enrolledTournaments, setEnrolledTournaments] = useState([]);
@@ -155,11 +154,9 @@ export default function Home() {
           )}
         />
 
-        <LogoutButton />
+        <LogoutButton onLogout={handleLogout} />
       </ScrollView>
     </View>
-    
-    
   );
 }
 

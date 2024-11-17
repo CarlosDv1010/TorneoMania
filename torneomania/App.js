@@ -12,7 +12,7 @@ import TournamentMenu from './components/TournamentMenu';
 import SportTournaments from './components/SportTournaments';
 import TournamentRegistration from './components/TournamentRegistration';
 import Profile from './components/Profile';  // Import Profile component
-import { getCurrentUser } from './services/backendless';
+import { getCurrentUser, logoutUser } from './services/backendless';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Stack = createStackNavigator();
@@ -28,10 +28,15 @@ export default function App() {
       }
     }
     fetchCurrentUser();
-  }, []);
+  }, [])
 
-  const handleLogout = () => {
-    setUser(null);
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      setUser(null); // Esto automáticamente redirigirá al AuthNavigator
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   return (
@@ -42,7 +47,7 @@ export default function App() {
             name="Home"
             options={{ title: `Bienvenido, ${user.username}` }}
           >
-            {(props) => <Home {...props} user={user} logout={handleLogout} />}
+            {(props) => <Home {...props} user={user} handleLogout={handleLogout} />}
           </Stack.Screen>
           <Stack.Screen
             name="TournamentMenu"
