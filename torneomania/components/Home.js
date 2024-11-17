@@ -55,15 +55,21 @@ export default function Home({ user, handleLogout, navigation }) {
       <SubscriptionsMenu show={true}></SubscriptionsMenu>
       <ScrollView>
         {/* Botón para navegar al menú de torneos */}
-        <TouchableOpacity
-          style={styles.searchContainer}
-          onPress={() => navigation.navigate('TournamentMenu')}
-        >
-          <Text style={styles.searchText}>BÚSQUEDA DE TORNEOS</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            style={[styles.searchContainer, { flex: 1, marginRight: 10 }]} // Flex: 1 hace que los botones se distribuyan proporcionalmente
+            onPress={() => navigation.navigate('TournamentMenu')}
+          >
+            <Text style={styles.searchText}>BÚSQUEDA DE TORNEOS</Text>
+          </TouchableOpacity>
 
-        {/* Botón para crear torneo */}
-        <CreateTournamentButton />
+          <TouchableOpacity
+            style={[styles.searchContainer, { flex: 1 }]}
+            onPress={() => navigation.navigate('CreateTournament')}
+          >
+            <Text style={styles.searchText}>CREAR TORNEO</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Botón para ir a perfil */}
         <TouchableOpacity
@@ -154,7 +160,9 @@ export default function Home({ user, handleLogout, navigation }) {
           )}
         />
 
-        <LogoutButton onLogout={handleLogout} />
+        <View style={styles.logoutButtonContainer}>
+          <LogoutButton onLogout={handleLogout} />
+        </View>
       </ScrollView>
     </View>
   );
@@ -163,18 +171,43 @@ export default function Home({ user, handleLogout, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1f3e', // Fondo similar al de la imagen
+    backgroundColor: '#121530', // Fondo más moderno y elegante.
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    marginHorizontal: 20, // Espacio en los lados del contenedor
+    marginTop: 20,
+  },
+  logoutButtonContainer: {
+    backgroundColor: '#ff4d4d', // Fondo rojo claro para el contenedor
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginHorizontal: 20,
+    marginBottom: 20,
+    alignItems: 'center', // Centra el contenido
+  },
+  searchContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: '#ffffff',
+    borderRadius: 10,
+    alignItems: 'center',
+    backgroundColor: '#2c365d', // Ajustar color de fondo si es necesario
   },
   navbar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 15,
-    backgroundColor: '#1a1f3e',
+    backgroundColor: '#1c2340',
+    borderBottomWidth: 1,
   },
   logo: {
     width: 50,
     height: 50,
+    borderRadius: 25,
   },
   navButtons: {
     flexDirection: 'row',
@@ -186,96 +219,118 @@ const styles = StyleSheet.create({
   notificationIcon: {
     width: 30,
     height: 30,
+    tintColor: '#ffffff',
   },
   navButton: {
-    backgroundColor: '#ffffff',
-    borderRadius: 5,
+    backgroundColor: '#3a4b72',
+    borderRadius: 20,
     paddingVertical: 5,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     marginLeft: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   navButtonText: {
-    color: '#1a1f3e',
+    color: '#ffffff',
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   searchContainer: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderWidth: 1,
-    borderColor: '#ffffff',
-    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    backgroundColor: '#3a4b72',
+    borderRadius: 20,
     marginHorizontal: 20,
     marginBottom: 20,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
   },
   searchText: {
     color: '#ffffff',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 22,
     color: '#ffffff',
-    fontWeight: 'bold',
+    fontWeight: '700',
     marginHorizontal: 20,
     marginBottom: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: '#4CAF50',
   },
   tournamentCard: {
     flexDirection: 'row',
-    backgroundColor: '#2c365d',
-    borderRadius: 10,
-    padding: 10,
+    backgroundColor: '#1c2340',
+    borderRadius: 15,
+    padding: 15,
     marginHorizontal: 20,
-    marginBottom: 10,
+    marginBottom: 15,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   tournamentImage: {
     width: 80,
     height: 80,
     borderRadius: 10,
-    marginRight: 10,
+    marginRight: 15,
   },
   tournamentInfo: {
     flex: 1,
   },
   tournamentName: {
     color: '#ffffff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '700',
     marginBottom: 5,
   },
   tournamentDescription: {
-    color: '#aaaaaa',
+    color: '#cccccc',
     fontSize: 14,
     marginBottom: 10,
   },
   registerButton: {
     backgroundColor: '#4CAF50',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 10,
     alignSelf: 'flex-start',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
   },
   registerButtonText: {
     color: '#ffffff',
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   playerCard: {
     flexDirection: 'row',
-    backgroundColor: '#2c365d',
-    borderRadius: 10,
-    padding: 10,
+    backgroundColor: '#1c2340',
+    borderRadius: 15,
+    padding: 15,
     marginHorizontal: 20,
-    marginBottom: 10,
+    marginBottom: 15,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   playerAvatar: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    marginRight: 10,
+    marginRight: 15,
   },
   playerInfo: {
     flex: 1,
@@ -283,10 +338,10 @@ const styles = StyleSheet.create({
   playerName: {
     color: '#ffffff',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   playerDetails: {
-    color: '#aaaaaa',
+    color: '#cccccc',
     fontSize: 14,
   },
 });
