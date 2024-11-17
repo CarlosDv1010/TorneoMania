@@ -31,7 +31,7 @@ export default function Home({ user, handleLogout, navigation }) {
   }, []);
 
   const handleTournamentPress = (tournament) => {
-    navigation.navigate('TournamentDetails', { tournament });
+    navigation.navigate('TournamentsDetail', { tournament });
   };
 
   return (

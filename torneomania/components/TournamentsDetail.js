@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
-export default function TournamentDetails({ route }) {
+export default function TournamentsDetail({ route }) {
   const { tournament } = route.params || {}; // Recibe los datos del torneo de las props
 
   if (!tournament) {
@@ -10,12 +10,8 @@ export default function TournamentDetails({ route }) {
   
   return (
     <View style={styles.container}>
-      <Image source={{ uri: tournament.sport.image || tournament.avatar }} style={styles.image} />
+      <Image source={{ uri: tournament.image }} style={styles.image} />
       <Text style={styles.title}>{tournament.name}</Text>
-      <Text style={styles.description}>{tournament.description || `Deporte: ${tournament.sport}`}</Text>
-      {tournament.winRate && (
-        <Text style={styles.details}>Winrate: {tournament.winRate}% - Games Played: {tournament.gamesPlayed}</Text>
-      )}
     </View>
   );
 }

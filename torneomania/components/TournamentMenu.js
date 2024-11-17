@@ -23,12 +23,17 @@ const tournaments = {
   Otros: Array(10).fill({ name: 'Torneo de Otros', image: 'https://via.placeholder.com/100' }), 
 };
 
-export default function TournamentMenu() {
+export default function TournamentMenu({ navigation }) {
   const [selectedSport, setSelectedSport] = useState('Todos');
 
   const handleFilterPress = (sport) => {
     setSelectedSport(sport);
   };
+
+  const handleTournamentPress = (tournament) => {
+    navigation.navigate('TournamentsDetail', { tournament });
+  };
+
 
   const filteredTournaments =
     selectedSport === 'Todos' ? Object.values(tournaments).flat() : tournaments[selectedSport];
@@ -75,10 +80,12 @@ export default function TournamentMenu() {
         <ScrollView>
           <View style={styles.tournamentList}>
             {filteredTournaments.map((item, index) => (
-              <View key={index.toString()} style={styles.tournamentCard}>
-                <Image source={{ uri: item.image }} style={styles.tournamentImage} />
-                <Text style={styles.tournamentName}>{item.name}</Text>
-              </View>
+              <TouchableOpacity onPress={() => handleTournamentPress(item)}>
+                  <View key={index.toString()} style={styles.tournamentCard}>
+                  <Image source={{ uri: item.image }} style={styles.tournamentImage} />
+                  <Text style={styles.tournamentName}>{item.name}</Text>
+                </View>
+              </TouchableOpacity>
             ))}
           </View>
         </ScrollView>
