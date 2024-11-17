@@ -1,19 +1,14 @@
 // LogoutButton.js
 import React, { useState } from 'react';
-import { Button, Alert, ActivityIndicator, View } from 'react-native';
-import { logoutUser } from '../services/backendless';
+import { Button, ActivityIndicator, View } from 'react-native';
 
 export default function LogoutButton({ onLogout }) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogout = async () => {
+  const handlePress = async () => {
     setIsLoading(true);
     try {
-      await logoutUser();
-      Alert.alert('Sesión cerrada');
-      onLogout(); // Llamamos a la función pasada como prop
-    } catch (error) {
-      Alert.alert('Error al cerrar sesión', error?.message || 'Inténtalo de nuevo más tarde.');
+      await onLogout();
     } finally {
       setIsLoading(false);
     }
@@ -24,6 +19,6 @@ export default function LogoutButton({ onLogout }) {
       <ActivityIndicator size="large" color="#0000ff" />
     </View>
   ) : (
-    <Button title="Cerrar Sesión" onPress={handleLogout} />
+    <Button title="Cerrar Sesión" onPress={handlePress} />
   );
 }
