@@ -42,7 +42,16 @@ export default function App() {
   return (
     <NavigationContainer>
       {user ? (
-        <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: '#2c365d', // Cambia el fondo del header
+              borderBottomWidth: 0,          // Elimina el borde inferior
+              shadowColor: 'transparent',    // Elimina la sombra (en algunos casos)
+            },
+            headerTintColor: '#ffffff',    // Cambia el color del texto del header si es necesario
+          }}
+        >
           <Stack.Screen
             name="Home"
             options={{ title: `Bienvenido, ${user.username}` }}
@@ -52,7 +61,7 @@ export default function App() {
           <Stack.Screen
             name="TournamentMenu"
             component={TournamentMenu}
-            options={{ title: 'Torneos' }}
+            options={{ title: 'Volver' }}
           />
           <Stack.Screen
             name="SportTournaments"
@@ -62,7 +71,7 @@ export default function App() {
           <Stack.Screen
             name="Notifications"
             component={NotificationCenter}
-            options={{ title: 'Notificaciones' }}
+            options={{ title: 'Volver' }}
           />
           <Stack.Screen
             name="TournamentRegistration"
@@ -72,7 +81,7 @@ export default function App() {
           <Stack.Screen
             name="CreateTournament"
             component={CreateTournament}
-            options={{ title: 'Crear Torneo' }}
+            options={{ title: 'Volver' }}
           />
           <Stack.Screen 
             name="TournamentsDetail" 
@@ -111,3 +120,4 @@ export default function App() {
     </NavigationContainer>
   );
 }
+

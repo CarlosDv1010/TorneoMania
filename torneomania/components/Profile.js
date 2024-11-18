@@ -110,7 +110,10 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     marginBottom: 10,
+    marginHorizontal: 20,
     alignSelf: 'flex-start',
+    borderBottomWidth: 2,
+    borderBottomColor: '#4CAF50',
   },
   tournamentList: {
     width: '100%',
