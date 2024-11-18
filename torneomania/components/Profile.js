@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, ScrollView, Picker } from 'react-native';
 
-const Profile = ({ user, logout }) => {
-  const organizedTournaments = user.organizedTournaments || []; // Torneos organizados por el usuario
-  const enrolledTournaments = user.enrolledTournaments || []; // Torneos en los que el usuario está inscrito
+const Profile = ({ user, logout, navigation }) => {
+  const organizedTournaments = user.organizedTournaments || [];
+  const enrolledTournaments = user.enrolledTournaments || [];
 
   // Datos de prueba para las estadísticas de cada torneo y gráficos
   const tournamentStats = {
@@ -18,7 +18,7 @@ const Profile = ({ user, logout }) => {
         { name: 'Sancho Martinez; Giants', assists: 4 },
         { name: 'Ernesto Contreras; Nyx', assists: 2 },
       ],
-      graphic: 'https://via.placeholder.com/300x200.png?text=Bracket+Torneo+1', // Imagen dummy
+      graphic: 'https://via.placeholder.com/300x200.png?text=Bracket+Torneo+1',
     },
     'Torneo 2': {
       scorers: [
@@ -31,11 +31,15 @@ const Profile = ({ user, logout }) => {
         { name: 'Miguel Lopez; Falcons', assists: 3 },
         { name: 'Carlos Silva; Eagles', assists: 2 },
       ],
-      graphic: 'https://via.placeholder.com/300x200.png?text=Bracket+Torneo+2', // Imagen dummy
+      graphic: 'https://via.placeholder.com/300x200.png?text=Bracket+Torneo+2',
     },
   };
 
-  const [selectedTournament, setSelectedTournament] = useState('Torneo 1'); // Torneo seleccionado
+  const [selectedTournament, setSelectedTournament] = useState('Torneo 1');
+
+  const handleUpgradeToPremium = () => {
+    navigation.navigate('SubscriptionScreen'); // Redirigir a la pantalla de suscripción
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -57,6 +61,15 @@ const Profile = ({ user, logout }) => {
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Correo</Text>
         <Text style={styles.info}>{user.email}</Text>
+      </View>
+
+      {/* Botón para mejorar a Premium */}
+      <View style={styles.premiumContainer}>
+        <Text style={styles.premiumText}>Torneomania Free</Text>
+        <Text style={styles.premiumSubtitle}>Upgrade to Premium for $10/year</Text>
+        <TouchableOpacity style={styles.upgradeButton} onPress={handleUpgradeToPremium}>
+          <Text style={styles.upgradeButtonText}>Upgrade to Premium</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Menú desplegable para seleccionar el torneo */}
@@ -120,7 +133,7 @@ const Profile = ({ user, logout }) => {
         style={styles.tournamentList}
       />
 
-      {/* Lista de torneos en los que está inscrito */}
+      {/* Lista de torneos inscritos */}
       <Text style={styles.sectionTitle}>Torneos inscritos</Text>
       <FlatList
         data={enrolledTournaments}
@@ -148,139 +161,34 @@ const Profile = ({ user, logout }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#1a1f3e',
-    padding: 20,
-  },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 20,
-    alignSelf: 'center',
-  },
-  welcomeText: {
-    fontSize: 20,
-    color: '#ffffff',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 30,
-  },
-  infoContainer: {
-    width: '100%',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderWidth: 1,
-    borderColor: '#ffffff',
-    borderRadius: 8,
-    marginBottom: 15,
-  },
-  label: {
-    fontSize: 14,
-    color: '#ffffff',
-    marginBottom: 5,
-  },
-  info: {
-    fontSize: 16,
-    color: '#ffffff',
-  },
-  sectionTitle: {
-    fontSize: 18,
-    color: '#ffffff',
-    fontWeight: 'bold',
-    marginBottom: 10,
-    alignSelf: 'flex-start',
-    borderBottomWidth: 2,
-    borderBottomColor: '#4CAF50',
-  },
-  dropdownContainer: {
-    backgroundColor: '#ffffff',
-    borderRadius: 5,
-    marginBottom: 20,
-    overflow: 'hidden',
-  },
-  dropdown: {
-    width: '100%',
-    height: 40,
-  },
-  graphicContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  graphicImage: {
-    width: 300,
-    height: 200,
-    borderRadius: 10,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginBottom: 20,
-  },
-  statBox: {
-    flex: 1,
-    backgroundColor: '#D1C4E9',
-    borderRadius: 8,
-    padding: 15,
-    marginHorizontal: 5,
-  },
-  statTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1a1f3e',
-    marginBottom: 10,
-  },
-  statItem: {
-    fontSize: 14,
-    color: '#1a1f3e',
-    marginBottom: 5,
-  },
-  tournamentList: {
-    width: '100%',
-    marginBottom: 20,
-  },
-  tournamentItem: {
-    backgroundColor: '#FFCDD2',
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  tournamentName: {
-    fontSize: 16,
-    color: '#1a1f3e',
-  },
-  emptyListText: {
-    fontSize: 14,
-    color: '#aaaaaa',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  changePasswordButton: {
-    flex: 1,
-    backgroundColor: '#4CAF50',
-    borderRadius: 5,
-    paddingVertical: 10,
-    marginRight: 10,
-    alignItems: 'center',
-  },
-  logoutButton: {
-    flex: 1,
-    backgroundColor: '#F44336',
-    borderRadius: 5,
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-  },
+  container: { flex: 1, backgroundColor: '#1a1f3e', padding: 20 },
+  profileImage: { width: 100, height: 100, borderRadius: 50, marginBottom: 20, alignSelf: 'center' },
+  welcomeText: { fontSize: 20, color: '#ffffff', fontWeight: 'bold', textAlign: 'center', marginBottom: 30 },
+  infoContainer: { width: '100%', paddingVertical: 10, paddingHorizontal: 15, marginBottom: 15 },
+  label: { fontSize: 14, color: '#ffffff' },
+  info: { fontSize: 16, color: '#ffffff' },
+  premiumContainer: { marginVertical: 20, alignItems: 'center' },
+  premiumText: { fontSize: 18, color: '#ffffff', fontWeight: 'bold' },
+  premiumSubtitle: { fontSize: 14, color: '#ffffff', marginBottom: 10 },
+  upgradeButton: { backgroundColor: '#4CAF50', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 8 },
+  upgradeButtonText: { color: '#ffffff', fontWeight: 'bold' },
+  sectionTitle: { fontSize: 18, color: '#ffffff', fontWeight: 'bold', marginBottom: 10 },
+  dropdownContainer: { backgroundColor: '#ffffff', borderRadius: 5, marginBottom: 20 },
+  dropdown: { width: '100%', height: 40 },
+  graphicContainer: { alignItems: 'center', marginBottom: 20 },
+  graphicImage: { width: 300, height: 200, borderRadius: 10 },
+  statsContainer: { flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginBottom: 20 },
+  statBox: { flex: 1, backgroundColor: '#D1C4E9', borderRadius: 8, padding: 15, marginHorizontal: 5 },
+  statTitle: { fontSize: 16, fontWeight: 'bold', color: '#1a1f3e', marginBottom: 10 },
+  statItem: { fontSize: 14, color: '#1a1f3e', marginBottom: 5 },
+  tournamentList: { width: '100%', marginBottom: 20 },
+  tournamentItem: { backgroundColor: '#FFCDD2', padding: 10, borderRadius: 8, marginBottom: 10 },
+  tournamentName: { fontSize: 16, color: '#1a1f3e' },
+  emptyListText: { fontSize: 14, color: '#aaaaaa', textAlign: 'center', marginBottom: 10 },
+  buttonContainer: { flexDirection: 'row', justifyContent: 'space-between', width: '100%' },
+  changePasswordButton: { flex: 1, backgroundColor: '#4CAF50', borderRadius: 5, paddingVertical: 10, alignItems: 'center' },
+  logoutButton: { flex: 1, backgroundColor: '#F44336', borderRadius: 5, paddingVertical: 10, alignItems: 'center' },
+  buttonText: { color: '#ffffff', fontWeight: 'bold' },
 });
 
 export default Profile;

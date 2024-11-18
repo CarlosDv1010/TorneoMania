@@ -11,7 +11,8 @@ import CreateTournament from './components/CreateTournament';
 import TournamentMenu from './components/TournamentMenu';
 import SportTournaments from './components/SportTournaments';
 import TournamentRegistration from './components/TournamentRegistration';
-import Profile from './components/Profile';  // Import Profile component
+import Profile from './components/Profile';
+import SubscriptionScreen from './components/Subscriptionscreen'; 
 import { getCurrentUser, logoutUser } from './services/backendless';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -28,12 +29,12 @@ export default function App() {
       }
     }
     fetchCurrentUser();
-  }, [])
+  }, []);
 
   const handleLogout = async () => {
     try {
       await logoutUser();
-      setUser(null); // Esto automáticamente redirigirá al AuthNavigator
+      setUser(null);
     } catch (error) {
       console.error('Error during logout:', error);
     }
@@ -45,11 +46,11 @@ export default function App() {
         <Stack.Navigator
           screenOptions={{
             headerStyle: {
-              backgroundColor: '#2c365d', // Cambia el fondo del header
-              borderBottomWidth: 0,          // Elimina el borde inferior
-              shadowColor: 'transparent',    // Elimina la sombra (en algunos casos)
+              backgroundColor: '#2c365d',
+              borderBottomWidth: 0,
+              shadowColor: 'transparent',
             },
-            headerTintColor: '#ffffff',    // Cambia el color del texto del header si es necesario
+            headerTintColor: '#ffffff',
           }}
         >
           <Stack.Screen
@@ -94,6 +95,15 @@ export default function App() {
           >
             {(props) => <Profile {...props} user={user} logout={handleLogout} />}
           </Stack.Screen>
+
+          <Stack.Screen
+            name="SubscriptionScreen"
+            component={SubscriptionScreen}
+            options={{ title: 'Suscripción Premium' }}
+          />
+          
+
+
         </Stack.Navigator>
       ) : (
         <Stack.Navigator>
@@ -120,4 +130,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
