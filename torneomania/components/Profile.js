@@ -1,30 +1,109 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, ScrollView, Picker } from 'react-native';
 
 const Profile = ({ user, logout }) => {
   const organizedTournaments = user.organizedTournaments || []; // Torneos organizados por el usuario
   const enrolledTournaments = user.enrolledTournaments || []; // Torneos en los que el usuario está inscrito
 
+  // Datos de prueba para las estadísticas de cada torneo y gráficos
+  const tournamentStats = {
+    'Torneo 1': {
+      scorers: [
+        { name: 'Sancho Martinez; Giants', goals: 8 },
+        { name: 'Pedro Pardo; Cubitos', goals: 5 },
+        { name: 'Ernesto Contreras; Nyx', goals: 3 },
+      ],
+      assists: [
+        { name: 'Saul Perez; Nomads', assists: 4 },
+        { name: 'Sancho Martinez; Giants', assists: 4 },
+        { name: 'Ernesto Contreras; Nyx', assists: 2 },
+      ],
+      graphic: 'https://via.placeholder.com/300x200.png?text=Bracket+Torneo+1', // Imagen dummy
+    },
+    'Torneo 2': {
+      scorers: [
+        { name: 'Miguel Lopez; Falcons', goals: 6 },
+        { name: 'Carlos Silva; Eagles', goals: 4 },
+        { name: 'Luis Perez; Sharks', goals: 3 },
+      ],
+      assists: [
+        { name: 'Juan Torres; Falcons', assists: 5 },
+        { name: 'Miguel Lopez; Falcons', assists: 3 },
+        { name: 'Carlos Silva; Eagles', assists: 2 },
+      ],
+      graphic: 'https://via.placeholder.com/300x200.png?text=Bracket+Torneo+2', // Imagen dummy
+    },
+  };
+
+  const [selectedTournament, setSelectedTournament] = useState('Torneo 1'); // Torneo seleccionado
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {/* Imagen de perfil */}
       <Image
         source={{ uri: 'https://via.placeholder.com/100' }} // Imagen dummy
         style={styles.profileImage}
       />
-      
+
       {/* Nombre del usuario */}
       <Text style={styles.welcomeText}>Bienvenido, {user.fullName || user.username}</Text>
 
       {/* Detalles del usuario */}
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Nombre Completo</Text>
-        <Text style={styles.info}>{user.fullName || "Nombre no disponible"}</Text>
+        <Text style={styles.info}>{user.fullName || 'Nombre no disponible'}</Text>
       </View>
 
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Correo</Text>
         <Text style={styles.info}>{user.email}</Text>
+      </View>
+
+      {/* Menú desplegable para seleccionar el torneo */}
+      <Text style={styles.sectionTitle}>Seleccionar Torneo</Text>
+      <View style={styles.dropdownContainer}>
+        <Picker
+          selectedValue={selectedTournament}
+          style={styles.dropdown}
+          onValueChange={(itemValue) => setSelectedTournament(itemValue)}
+        >
+          {Object.keys(tournamentStats).map((tournament) => (
+            <Picker.Item key={tournament} label={tournament} value={tournament} />
+          ))}
+        </Picker>
+      </View>
+
+      {/* Gráfica del torneo */}
+      <Text style={styles.sectionTitle}>Gráfica del Torneo</Text>
+      <View style={styles.graphicContainer}>
+        <Image
+          source={{ uri: tournamentStats[selectedTournament].graphic }}
+          style={styles.graphicImage}
+        />
+      </View>
+
+      {/* Sección de estadísticas */}
+      <Text style={styles.sectionTitle}>Estadísticas</Text>
+      <View style={styles.statsContainer}>
+        {/* Goleadores */}
+        <View style={styles.statBox}>
+          <Text style={styles.statTitle}>Jugadores</Text>
+          {tournamentStats[selectedTournament].scorers.map((item, index) => (
+            <Text key={index} style={styles.statItem}>
+              {item.name} - {item.goals} Goles
+            </Text>
+          ))}
+        </View>
+
+        {/* Asistencias */}
+        <View style={styles.statBox}>
+          <Text style={styles.statTitle}>Top Asistencias</Text>
+          {tournamentStats[selectedTournament].assists.map((item, index) => (
+            <Text key={index} style={styles.statItem}>
+              {item.name} - {item.assists} Asistencias
+            </Text>
+          ))}
+        </View>
       </View>
 
       {/* Lista de torneos organizados */}
@@ -64,7 +143,7 @@ const Profile = ({ user, logout }) => {
           <Text style={styles.buttonText}>CERRAR CUENTA</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -73,18 +152,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1a1f3e',
     padding: 20,
-    alignItems: 'center',
   },
   profileImage: {
     width: 100,
     height: 100,
     borderRadius: 50,
     marginBottom: 20,
+    alignSelf: 'center',
   },
   welcomeText: {
     fontSize: 20,
     color: '#ffffff',
     fontWeight: 'bold',
+    textAlign: 'center',
     marginBottom: 30,
   },
   infoContainer: {
@@ -110,10 +190,52 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     marginBottom: 10,
-    marginHorizontal: 20,
     alignSelf: 'flex-start',
     borderBottomWidth: 2,
     borderBottomColor: '#4CAF50',
+  },
+  dropdownContainer: {
+    backgroundColor: '#ffffff',
+    borderRadius: 5,
+    marginBottom: 20,
+    overflow: 'hidden',
+  },
+  dropdown: {
+    width: '100%',
+    height: 40,
+  },
+  graphicContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  graphicImage: {
+    width: 300,
+    height: 200,
+    borderRadius: 10,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 20,
+  },
+  statBox: {
+    flex: 1,
+    backgroundColor: '#D1C4E9',
+    borderRadius: 8,
+    padding: 15,
+    marginHorizontal: 5,
+  },
+  statTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1a1f3e',
+    marginBottom: 10,
+  },
+  statItem: {
+    fontSize: 14,
+    color: '#1a1f3e',
+    marginBottom: 5,
   },
   tournamentList: {
     width: '100%',
