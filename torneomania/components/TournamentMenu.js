@@ -78,16 +78,18 @@ export default function TournamentMenu({ navigation }) {
       {/* Contenedor con scroll para los torneos */}
       <View style={styles.tournamentContainer}>
         <ScrollView>
-          <View style={styles.tournamentList}>
-            {filteredTournaments.map((item, index) => (
-              <TouchableOpacity onPress={() => handleTournamentPress(item)}>
-                  <View key={index.toString()} style={styles.tournamentCard}>
-                  <Image source={{ uri: item.image }} style={styles.tournamentImage} />
-                  <Text style={styles.tournamentName}>{item.name}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
+        <View style={styles.tournamentList}>
+          {filteredTournaments.map((item, index) => (
+            <TouchableOpacity 
+              key={index.toString()} 
+              onPress={() => handleTournamentPress(item)}
+              style={styles.tournamentCard} // Agrega los estilos de la tarjeta aquí
+            >
+              <Image source={{ uri: item.image }} style={styles.tournamentImage} />
+              <Text style={styles.tournamentName}>{item.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
         </ScrollView>
       </View>
     </View>
@@ -149,14 +151,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   tournamentCard: {
-    width: 250, // Establece un ancho fijo para las tarjetas
-    height: 150, // Establece una altura fija para las tarjetas
     backgroundColor: '#2c365d',
     borderRadius: 10,
     padding: 10,
     margin: 5,
     alignItems: 'center',
     width: '30%',
+    shadowColor: '#000', // Para sombra (opcional)
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5, // Para Android
   },
   tournamentImage: {
     width: 80,
