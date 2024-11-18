@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginVertical: 10,
     paddingHorizontal: 10,
-    maxHeight: 400,
+    maxHeight: 1500,
   },
   tournamentList: {
     flexDirection: 'row',
