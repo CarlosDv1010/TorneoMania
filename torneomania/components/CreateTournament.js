@@ -191,31 +191,34 @@ export default function CreateTournament() {
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: 'center',
-    backgroundColor: '#1A2731', // Fondo oscuro
+    backgroundColor: '#121530', // Fondo uniforme y moderno
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
     textAlign: 'center',
-    color: '#FFFFFF',
+    color: '#ffffff',
+    fontWeight: '700',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#FFFFFF',
-    padding: 10,
+    borderColor: '#3a4b72',
+    padding: 12,
     marginVertical: 10,
-    borderRadius: 5,
-    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    backgroundColor: '#1c2340',
+    color: '#ffffff',
   },
   label: {
-    color: '#FFFFFF',
+    color: '#ffffff',
     marginTop: 10,
-    fontWeight: 'bold',
+    fontWeight: '600',
+    fontSize: 16,
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -223,13 +226,33 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   checkboxLabel: {
-    color: '#FFFFFF',
+    color: '#ffffff',
     marginLeft: 8,
+    fontSize: 14,
   },
   picker: {
     height: 50,
     width: '100%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1c2340',
+    borderRadius: 10,
+    color: '#ffffff',
     marginVertical: 10,
+    paddingHorizontal: 10,
+  },
+  buttonContainer: {
+    backgroundColor: '#4CAF50',
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '700',
   },
 });
