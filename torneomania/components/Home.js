@@ -54,117 +54,120 @@ export default function Home({ user, handleLogout, navigation }) {
       </View>
       
       <SubscriptionsMenu show={true}></SubscriptionsMenu>
-      <ScrollView>
-        {/* Botón para navegar al menú de torneos */}
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={[styles.searchContainer, { flex: 1, marginRight: 10 }]} // Flex: 1 hace que los botones se distribuyan proporcionalmente
-            onPress={() => navigation.navigate('TournamentMenu')}
-          >
-            <Text style={styles.searchText}>BÚSQUEDA DE TORNEOS</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.searchContainer, { flex: 1 }]}
-            onPress={() => navigation.navigate('CreateTournament')}
-          >
-            <Text style={styles.searchText}>CREAR TORNEO</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Botón para ir a perfil */}
+      {/* Botón para navegar al menú de torneos */}
+      <View style={styles.buttonRow}>
         <TouchableOpacity
-          style={styles.searchContainer}
-          onPress={() => navigation.navigate('Profile')}
+          style={[styles.searchContainer, { flex: 1, marginRight: 10 }]} // Flex: 1 hace que los botones se distribuyan proporcionalmente
+          onPress={() => navigation.navigate('TournamentMenu')}
         >
-          <Text style={styles.searchText}>Ir al Perfil</Text>
+          <Text style={styles.searchText}>BÚSQUEDA DE TORNEOS</Text>
         </TouchableOpacity>
 
-        <Text style={styles.sectionTitle}>Lo más popular</Text>
-        <FlatList
-          data={featuredTournaments}
-          keyExtractor={(item) => item.objectId}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleTournamentPress(item)}>
-              <View style={styles.tournamentCard}>
-                <Image source={{ uri: item.image }} style={styles.tournamentImage} />
-                <View style={styles.tournamentInfo}>
-                  <Text style={styles.tournamentName}>{item.name}</Text>
-                  <Text style={styles.tournamentDescription}>{item.description}</Text>
-                  <TouchableOpacity
-                    style={styles.registerButton}
-                    onPress={() => {
-                      const tournamentId = item.objectId; 
-                      navigation.navigate('TournamentRegistration', { tournamentId });
-                    }}
-                  >
-                    <Text style={styles.registerButtonText}>Registrarse</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
+        <TouchableOpacity
+          style={[styles.searchContainer, { flex: 1 }]}
+          onPress={() => navigation.navigate('CreateTournament')}
+        >
+          <Text style={styles.searchText}>CREAR TORNEO</Text>
+        </TouchableOpacity>
+      </View>
 
-        <Text style={styles.sectionTitle}>Mis Torneos Creados</Text>
-        <FlatList
-          data={organizedTournaments}
-          keyExtractor={(item) => item.objectId}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleTournamentPress(item)}>
-              <View style={styles.tournamentCard}>
-                <Image source={{ uri: item.sport }} style={styles.tournamentImage} />
-                <View style={styles.tournamentInfo}>
-                  <Text style={styles.tournamentName}>{item.name}</Text>
-                  <Text style={styles.tournamentDescription}>{item.description}</Text>
-                  <TouchableOpacity style={styles.registerButton}>
-                    <Text style={styles.registerButtonText}>Ver información</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
-
-        <Text style={styles.sectionTitle}>Mis Torneos</Text>
-        <FlatList
-          data={enrolledTournaments}
-          keyExtractor={(item) => item.objectId}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleTournamentPress(item)}>
-              <View style={styles.tournamentCard}>
-                <Image source={{ uri: item.sport }} style={styles.tournamentImage} />
-                <View style={styles.tournamentInfo}>
-                  <Text style={styles.tournamentName}>{item.name}</Text>
-                  <Text style={styles.tournamentDescription}>{item.description}</Text>
-                  <TouchableOpacity style={styles.registerButton}>
-                    <Text style={styles.registerButtonText}>Ver información</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
-
-        <Text style={styles.sectionTitle}>Ranking de jugadores</Text>
-        <FlatList
-          data={enrolledTournaments}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.playerCard}>
-              <Image source={{ uri: item.avatar }} style={styles.playerAvatar} />
-              <View style={styles.playerInfo}>
-                <Text style={styles.playerName}>{item.name}</Text>
-                <Text style={styles.playerDetails}>{item.sport} - {item.winRate}% Winrate - {item.gamesPlayed} Games</Text>
+      {/* Botón para ir a perfil */}
+      <TouchableOpacity
+        style={styles.searchContainer}
+        onPress={() => navigation.navigate('Profile')}
+      >
+        <Text style={styles.searchText}>Ir al Perfil</Text>
+      </TouchableOpacity>
+      <Text style={styles.sectionTitle}>Lo más popular</Text>
+      <FlatList
+        data={featuredTournaments}
+        keyExtractor={(item) => item.objectId}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleTournamentPress(item)}>
+            <View style={styles.tournamentCard}>
+              <Image source={{ uri: item.image }} style={styles.tournamentImage} />
+              <View style={styles.tournamentInfo}>
+                <Text style={styles.tournamentName}>{item.name}</Text>
+                <Text style={styles.tournamentDescription}>{item.description}</Text>
+                <TouchableOpacity
+                  style={styles.registerButton}
+                  onPress={() => {
+                    const tournamentId = item.objectId;
+                    navigation.navigate('TournamentRegistration', { tournamentId });
+                  }}
+                >
+                  <Text style={styles.registerButtonText}>Registrarse</Text>
+                </TouchableOpacity>
               </View>
             </View>
-          )}
-        />
+          </TouchableOpacity>
+        )}
+        horizontal // Habilita el desplazamiento horizontal
+        showsHorizontalScrollIndicator={true}
+        contentContainerStyle={{ paddingHorizontal: 5 }} // Ajusta el espacio alrededor
+      />
 
-        <View style={styles.logoutButtonContainer}>
-          <LogoutButton onLogout={handleLogout} />
-        </View>
-      </ScrollView>
+
+
+      <Text style={styles.sectionTitle}>Mis Torneos Creados</Text>
+      <FlatList
+        data={organizedTournaments}
+        keyExtractor={(item) => item.objectId}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleTournamentPress(item)}>
+            <View style={styles.tournamentCard}>
+              <Image source={{ uri: item.image }} style={styles.tournamentImage} />
+              <View style={styles.tournamentInfo}>
+                <Text style={styles.tournamentName}>{item.name}</Text>
+                <Text style={styles.tournamentDescription}>{item.description}</Text>
+                <TouchableOpacity style={styles.registerButton}>
+                  <Text style={styles.registerButtonText}>Ver información</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
+      />
+
+      <Text style={styles.sectionTitle}>Mis Torneos</Text>
+      <FlatList
+        data={enrolledTournaments}
+        keyExtractor={(item) => item.objectId}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleTournamentPress(item)}>
+            <View style={styles.tournamentCard}>
+              <Image source={{ uri: item.image }} style={styles.tournamentImage} />
+              <View style={styles.tournamentInfo}>
+                <Text style={styles.tournamentName}>{item.name}</Text>
+                <Text style={styles.tournamentDescription}>{item.description}</Text>
+                <TouchableOpacity style={styles.registerButton}>
+                  <Text style={styles.registerButtonText}>Ver información</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
+      />
+
+      <Text style={styles.sectionTitle}>Ranking de jugadores</Text>
+      <FlatList
+        data={enrolledTournaments}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.playerCard}>
+            <Image source={{ uri: item.avatar }} style={styles.playerAvatar} />
+            <View style={styles.playerInfo}>
+              <Text style={styles.playerName}>{item.name}</Text>
+              <Text style={styles.playerDetails}>{item.sport} - {item.winRate}% Winrate - {item.gamesPlayed} Games</Text>
+            </View>
+          </View>
+        )}
+      />
+
+      <View style={styles.logoutButtonContainer}>
+        <LogoutButton onLogout={handleLogout} />
+      </View>
+
     </View>
   );
 }
@@ -176,7 +179,7 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: 'row',
-    marginHorizontal: 20, // Espacio en los lados del contenedor
+    //marginHorizontal: 20, // Espacio en los lados del contenedor
     marginTop: 20,
   },
   logoutButtonContainer: {
@@ -266,11 +269,13 @@ const styles = StyleSheet.create({
     borderBottomColor: '#4CAF50',
   },
   tournamentCard: {
+    width: 250, // Establece un ancho fijo para las tarjetas
+    height: 150, // Establece una altura fija para las tarjetas
     flexDirection: 'row',
     backgroundColor: '#1c2340',
     borderRadius: 15,
     padding: 15,
-    marginHorizontal: 20,
+    marginHorizontal: 10,
     marginBottom: 15,
     alignItems: 'center',
     shadowColor: '#000',

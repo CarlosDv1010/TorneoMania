@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Alert, TextInput } from 'react-native';
+import { View, Text, Button, Alert, TextInput, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { getTournamentDetails, createFootballTeamAndAddToTournament, requestToJoinTeam, sendNotificationToLeader } from '../services/backendless';
 
 export default function TournamentRegistration({ route, navigation }) {
-  const { tournamentId } = route.params; // Obtener el tournamentId del parámetro
-  const [teamName, setTeamName] = useState(''); // Para ingresar el nombre del equipo
+  const { tournamentId } = route.params;
+  const [teamName, setTeamName] = useState('');
   const [tournamentDetails, setTournamentDetails] = useState(null);
-  const [userId, setUserId] = useState(''); // Aquí debes obtener el userId actual del usuario
+  const [userId, setUserId] = useState('');
 
-  // Simulación de obtención del userId, en tu app debería ser dinámico
   useEffect(() => {
     const getUserId = async () => {
-      // Aquí puedes llamar a Backendless.UserService para obtener el usuario actual.
       const currentUser = await Backendless.UserService.getCurrentUser();
       if (currentUser) {
         setUserId(currentUser.objectId);
       }
     };
-
     getUserId();
   }, []);
 
@@ -30,7 +27,6 @@ export default function TournamentRegistration({ route, navigation }) {
         Alert.alert('Error', 'No se pudo obtener los detalles del torneo');
       }
     };
-
     fetchTournamentDetails();
   }, [tournamentId]);
 
@@ -39,14 +35,9 @@ export default function TournamentRegistration({ route, navigation }) {
       Alert.alert('Error', 'El nombre del equipo es obligatorio');
       return;
     }
-
     try {
-      // Llamar a la función para crear el equipo y asociarlo al torneo
       const result = await createFootballTeamAndAddToTournament(tournamentId, teamName, userId);
-      
       Alert.alert('Éxito', `Equipo ${teamName} creado y añadido al torneo`);
-      
-      // Puedes realizar alguna acción adicional, como redirigir o actualizar la UI
     } catch (error) {
       Alert.alert('Error', 'Hubo un problema al crear el equipo');
     }
@@ -63,38 +54,108 @@ export default function TournamentRegistration({ route, navigation }) {
   };
 
   if (!tournamentDetails) {
-    return <Text>Cargando detalles del torneo...</Text>;
+    return <Text style={styles.loadingText}>Cargando detalles del torneo...</Text>;
   }
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text>{tournamentDetails.tournament.name}</Text>
-      <Text>Equipos inscritos: {tournamentDetails.teams.length}</Text>
-      <Text>Cupos disponibles: {tournamentDetails.availableSlots}</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>{tournamentDetails.tournament.name}</Text>
+      <Text style={styles.infoText}>Equipos inscritos: {tournamentDetails.teams.length}</Text>
+      <Text style={styles.infoText}>Cupos disponibles: {tournamentDetails.availableSlots}</Text>
 
-      {/* Campo para ingresar el nombre del equipo */}
       <TextInput
         placeholder="Nombre del equipo"
+        placeholderTextColor="#aaa"
         value={teamName}
         onChangeText={setTeamName}
-        style={{ borderBottomWidth: 1, marginVertical: 10, padding: 10 }}
+        style={styles.input}
       />
 
       {tournamentDetails.availableSlots > 0 ? (
-        <Button title="Crear equipo de fútbol" onPress={handleCreateTeam} />
+        <TouchableOpacity style={styles.createButton} onPress={handleCreateTeam}>
+          <Text style={styles.createButtonText}>Crear equipo de fútbol</Text>
+        </TouchableOpacity>
       ) : (
-        <Text>No hay cupos disponibles para crear un equipo.</Text>
+        <Text style={styles.noSlotsText}>No hay cupos disponibles para crear un equipo.</Text>
       )}
 
-      <Text>O</Text>
-      <Text>Únete a un equipo existente:</Text>
+      <Text style={styles.sectionTitle}>Únete a un equipo existente:</Text>
       {tournamentDetails.teams.map((team) => (
-        <Button
+        <TouchableOpacity
           key={team.objectId}
-          title={`Unirse al equipo ${team.name}`} // Mostrar el nombre del equipo
+          style={styles.teamButton}
           onPress={() => handleJoinTeamRequest(team.objectId)}
-        />
+        >
+          <Text style={styles.teamButtonText}>Unirse al equipo {team.name}</Text>
+        </TouchableOpacity>
       ))}
-    </View>
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    backgroundColor: '#1c2340',
+    flexGrow: 1,
+  },
+  loadingText: {
+    color: '#ffffff',
+    fontSize: 18,
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  title: {
+    fontSize: 24,
+    color: '#ffffff',
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  infoText: {
+    color: '#cccccc',
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  input: {
+    borderBottomWidth: 1,
+    borderColor: '#4CAF50',
+    color: '#ffffff',
+    marginVertical: 15,
+    padding: 10,
+  },
+  createButton: {
+    backgroundColor: '#4CAF50',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  createButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  noSlotsText: {
+    color: '#ff4d4d',
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  sectionTitle: {
+    fontSize: 20,
+    color: '#ffffff',
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  teamButton: {
+    backgroundColor: '#333a56',
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  teamButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+  },
+});

@@ -149,6 +149,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   tournamentCard: {
+    width: 250, // Establece un ancho fijo para las tarjetas
+    height: 150, // Establece una altura fija para las tarjetas
     backgroundColor: '#2c365d',
     borderRadius: 10,
     padding: 10,
