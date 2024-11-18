@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, ScrollView } from 'react-native';
 
 export default function NotificationCenter() {
   const [notifications, setNotifications] = useState([]);
@@ -17,26 +17,35 @@ export default function NotificationCenter() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>NOTIFICACIONES</Text>
-      <FlatList
-        data={notifications}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.notification}>
-            <Image source={{ uri: item.icon }} style={styles.icon} />
-            <View style={styles.textContainer}>
-              <Text style={styles.notificationTitle}>{item.title}</Text>
-              <Text style={styles.notificationMessage}>{item.message}</Text>
-            </View>
-          </View>
-        )}
-      />
-    </View>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        <Text style={styles.title}>NOTIFICACIONES</Text>
+        <View style={styles.notificationListContainer}>
+          <FlatList
+            data={notifications}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.notification}>
+                <Image source={{ uri: item.icon }} style={styles.icon} />
+                <View style={styles.textContainer}>
+                  <Text style={styles.notificationTitle}>{item.title}</Text>
+                  <Text style={styles.notificationMessage}>{item.message}</Text>
+                </View>
+              </View>
+            )}
+            nestedScrollEnabled={true} // Habilitar scroll interno
+          />
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
   container: {
     flex: 1,
     backgroundColor: '#1a1f3e', // Fondo oscuro similar al de la imagen
@@ -48,6 +57,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
+  },
+  notificationListContainer: {
+    height: 1500, // Limitar la altura del listado
   },
   notification: {
     flexDirection: 'row',
