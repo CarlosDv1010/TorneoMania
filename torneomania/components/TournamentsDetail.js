@@ -1,40 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, FlatList } from 'react-native';
-import Backendless from 'backendless';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { getTournamentDetails } from '../services/backendless';
 
 export default function TournamentsDetail({ route, navigation }) {
   const { tournament } = route.params || {};
-  const [teams, setTeams] = useState([]);
+  const [tournamentDetails, setTournamentDetails] = useState(null);
 
   useEffect(() => {
     const fetchTournamentDetails = async () => {
+      if (!tournament || !tournament.objectId) return;
+
       try {
-        // Consulta los detalles del torneo con la relación de equipos
-        const tournamentWithTeams = await Backendless.Data.of('Tournaments').findById({
-          objectId: tournament.objectId,
-          relations: ['teams'],
-        });
-        setTeams(tournamentWithTeams.teams || []);
+        const details = await getTournamentDetails(tournament.objectId);
+        setTournamentDetails(details);
       } catch (error) {
-        Alert.alert('Error', 'No se pudo obtener los detalles del torneo');
-        console.error('Error fetching tournament details:', error);
+        Alert.alert('Error', 'No se pudieron obtener los detalles del torneo');
       }
     };
 
-    if (tournament && tournament.objectId) {
-      fetchTournamentDetails();
-    }
+    fetchTournamentDetails();
   }, [tournament]);
 
-  if (!tournament) {
-    return <Text style={{ color: '#ffffff' }}>No se pudo cargar el torneo.</Text>;
+  if (!tournamentDetails) {
+    return <Text style={styles.loadingText}>Cargando detalles del torneo...</Text>;
   }
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: tournament.image }} style={styles.image} />
-      <Text style={styles.title}>{tournament.name}</Text>
-      <Text style={styles.description}>{tournament.description}</Text>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Image source={{ uri: tournament.image }} style={styles.image} />
+        <Text style={styles.title}>{tournament.name}</Text>
+        <Text style={styles.description}>{tournament.description}</Text>
+
+        <Text style={styles.sectionTitle}>Equipos inscritos:</Text>
+        {tournamentDetails.teams.length > 0 ? (
+          <ScrollView style={styles.teamsContainer}>
+            {tournamentDetails.teams.map((team) => (
+              <TouchableOpacity key={team.objectId} style={styles.teamButton}>
+                <Text style={styles.teamButtonText}>{team.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        ) : (
+          <Text style={styles.noTeamsText}>No hay equipos inscritos.</Text>
+        )}
+      </ScrollView>
+
       <TouchableOpacity
         style={styles.registerButton}
         onPress={() => {
@@ -44,21 +55,6 @@ export default function TournamentsDetail({ route, navigation }) {
       >
         <Text style={styles.registerButtonText}>Registrarse</Text>
       </TouchableOpacity>
-
-      <Text style={styles.subtitle}>Equipos Inscritos</Text>
-      {teams.length > 0 ? (
-        <FlatList
-          data={teams}
-          keyExtractor={(item) => item.objectId}
-          renderItem={({ item }) => (
-            <View style={styles.teamCard}>
-              <Text style={styles.teamName}>{item.name}</Text>
-            </View>
-          )}
-        />
-      ) : (
-        <Text style={{ color: '#ffffff' }}>No hay equipos registrados.</Text>
-      )}
     </View>
   );
 }
@@ -67,7 +63,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#1c2340',
-    padding: 15,
+  },
+  scrollContent: {
+    padding: 20,
+  },
+  loadingText: {
+    color: '#ffffff',
+    fontSize: 18,
+    textAlign: 'center',
+    marginTop: 20,
   },
   image: {
     width: '100%',
@@ -79,38 +83,50 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#ffffff',
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
+    textAlign: 'left',
   },
   description: {
-    fontSize: 16,
     color: '#cccccc',
-    marginBottom: 20,
-  },
-  registerButton: {
-    backgroundColor: '#4CAF50',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  registerButtonText: {
-    color: '#ffffff',
     fontSize: 16,
+    marginBottom: 20,
   },
-  subtitle: {
+  sectionTitle: {
     fontSize: 20,
     color: '#ffffff',
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  teamCard: {
+  teamsContainer: {
+    maxHeight: 200, // Controla la altura máxima del contenedor de equipos
+    marginBottom: 10,
+  },
+  teamButton: {
     backgroundColor: '#333a56',
     padding: 10,
     borderRadius: 8,
     marginBottom: 10,
   },
-  teamName: {
+  teamButtonText: {
     color: '#ffffff',
     fontSize: 16,
+  },
+  noTeamsText: {
+    color: '#ff4d4d',
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  registerButton: {
+    backgroundColor: '#4CAF50',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    margin: 20,
+  },
+  registerButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
