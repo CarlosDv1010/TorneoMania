@@ -73,7 +73,7 @@ export default function TournamentRegistration({ route, navigation }) {
 
       {tournamentDetails.availableSlots > 0 ? (
         <TouchableOpacity style={styles.createButton} onPress={handleCreateTeam}>
-          <Text style={styles.createButtonText}>Crear equipo de fútbol</Text>
+          <Text style={styles.createButtonText}>Crear equipo</Text>
         </TouchableOpacity>
       ) : (
         <Text style={styles.noSlotsText}>No hay cupos disponibles para crear un equipo.</Text>
