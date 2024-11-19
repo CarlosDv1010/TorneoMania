@@ -52,6 +52,7 @@ export async function fetchTournamentDetailsWithSportAndTeams(tournamentId) {
 
     // Buscar el torneo con el DataQueryBuilder, cargando las relaciones 'sport' y 'teams'
     const tournament = await Backendless.Data.of('Tournaments').findById(tournamentId, dataQuery);
+    tournament.availableSlots = tournament.maxTeams - tournament.teams.length;
 
     // Verificar si la relación 'sport' fue cargada
     if (tournament.sport) {
