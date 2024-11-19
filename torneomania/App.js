@@ -12,7 +12,7 @@ import TournamentMenu from './components/TournamentMenu';
 import SportTournaments from './components/SportTournaments';
 import TournamentRegistration from './components/TournamentRegistration';
 import Profile from './components/Profile';
-import SubscriptionScreen from './components/Subscriptionscreen'; 
+import SubscriptionScreen from './components/SubscriptionScreen'; 
 import { getCurrentUser, logoutUser } from './services/backendless';
 import 'bootstrap/dist/css/bootstrap.min.css';
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Button, Alert, TextInput, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { getTournamentDetails, createFootballTeamAndAddToTournament, requestToJoinTeam, sendNotificationToLeader } from '../services/backendless';
+import { getTournamentDetails, createTeamAndAddToTournament, fetchTournamentDetailsWithSportAndTeams, requestToJoinTeam, sendNotificationToLeader, loadRelations } from '../services/backendless';
 
 export default function TournamentRegistration({ route, navigation }) {
   const { tournamentId } = route.params;
@@ -21,10 +21,13 @@ export default function TournamentRegistration({ route, navigation }) {
   useEffect(() => {
     const fetchTournamentDetails = async () => {
       try {
-        const details = await getTournamentDetails(tournamentId);
+        const details = await fetchTournamentDetailsWithSportAndTeams(tournamentId);
         setTournamentDetails(details);
+        console.log('Detalles del torneo:', details);
+
       } catch (error) {
-        Alert.alert('Error', 'No se pudo obtener los detalles del torneo');
+        console.error('Error al cargar la relación sport:', error);
+        details.sport = null; // Asegurarse de no bloquear la aplicación
       }
     };
     fetchTournamentDetails();
@@ -36,7 +39,7 @@ export default function TournamentRegistration({ route, navigation }) {
       return;
     }
     try {
-      const result = await createFootballTeamAndAddToTournament(tournamentId, teamName, userId);
+      const result = await createTeamAndAddToTournament(tournamentId, teamName, userId, details.sport.name);
       Alert.alert('Éxito', `Equipo ${teamName} creado y añadido al torneo`);
     } catch (error) {
       Alert.alert('Error', 'Hubo un problema al crear el equipo');
@@ -59,7 +62,7 @@ export default function TournamentRegistration({ route, navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>{tournamentDetails.tournament.name}</Text>
+      <Text style={styles.title}>{tournamentDetails.name}</Text>
       <Text style={styles.infoText}>Equipos inscritos: {tournamentDetails.teams.length}</Text>
       <Text style={styles.infoText}>Cupos disponibles: {tournamentDetails.availableSlots}</Text>
 
