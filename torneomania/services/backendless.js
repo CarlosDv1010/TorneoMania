@@ -45,42 +45,102 @@ export async function getTournamentDetails(tournamentId) {
   }
 }
 
-// Crear un equipo
-export async function createFootballTeamAndAddToTournament(tournamentId, teamName, currentUserId) {
+export async function fetchTournamentDetailsWithSportAndTeams(tournamentId) {
   try {
-    // Crear el nuevo equipo
-    const newTeam = {
-      name: teamName,
-      sport: 'Fútbol',
-      players: [currentUserId], // Lista de jugadores inicial, solo con el creador
-      createdAt: new Date(),
-      tournament: { __meta: '1:1', objectId: tournamentId } // Relación uno a uno con el torneo
-    };
+    // Crear el DataQueryBuilder para cargar las relaciones 'sport' y 'teams'
+    const dataQuery = Backendless.DataQueryBuilder.create().setRelated(['sport', 'teams']);
 
-    // Guardar el equipo
-    const savedTeam = await Backendless.Data.of('Teams').save(newTeam);
+    // Buscar el torneo con el DataQueryBuilder, cargando las relaciones 'sport' y 'teams'
+    const tournament = await Backendless.Data.of('Tournaments').findById(tournamentId, dataQuery);
 
-    // Añadir el equipo al torneo (relación uno a muchos)
-    await Backendless.Data.of('Tournaments').addRelation(tournamentId, 'teams', [savedTeam.objectId]);
-    await Backendless.Data.of('Teams').addRelation(savedTeam.objectId, 'tournament', [tournamentId]);
+    // Verificar si la relación 'sport' fue cargada
+    if (tournament.sport) {
+      console.log('Deporte asociado al torneo:', tournament.sport.name); // Suponiendo que el campo 'name' existe en la tabla de deportes
+    } else {
+      console.log('No se encontró el deporte asociado al torneo.');
+    }
 
-    // Devolver el equipo creado y el torneo actualizado
-    return { team: savedTeam };
+    // Verificar si la relación 'teams' fue cargada
+    if (tournament.teams && tournament.teams.length > 0) {
+      console.log('Equipos en el torneo:', tournament.teams);
+    } else {
+      console.log('No se encontraron equipos en el torneo.');
+    }
+
+    return tournament;
+
   } catch (error) {
-    console.error('Error al crear el equipo o agregarlo al torneo:', error);
+    console.error('Error al cargar el torneo o sus relaciones:', error.message);
     throw error;
   }
 }
 
 
+// Crear un equipo
+export async function createTeamAndAddToTournament(tournamentId, teamName, currentUserId, sportName) {
+  try {
+    // Obtener el deporte asociado con el nombre proporcionado
+    const sport = await Backendless.Data.of('Sports').findFirst({ where: `name = '${sportName}'` });
+    if (!sport) {
+      throw new Error(`El deporte '${sportName}' no existe.`);
+    }
+
+    // Crear el nuevo equipo
+    const newTeam = {
+      name: teamName,
+      sport: { __meta: '1:1', objectId: sport.objectId }, // Relación uno a uno con el deporte
+      players: [currentUserId], // Lista de jugadores inicial con el creador
+      createdAt: new Date(),
+    };
+
+    // Guardar el equipo
+    const savedTeam = await Backendless.Data.of('Teams').save(newTeam);
+
+    // Establecer la relación entre el equipo y el torneo
+    await Backendless.Data.of('Tournaments').addRelation(tournamentId, 'teams', [savedTeam.objectId]);
+
+    // Establecer la relación entre el equipo y el usuario líder
+    await Backendless.Data.of('Teams').addRelation(savedTeam.objectId, 'leader', [currentUserId]);
+
+    // Establecer la relación entre el torneo y el equipo
+    await Backendless.Data.of('Teams').addRelation(savedTeam.objectId, 'tournament', [tournamentId]);
+
+    return { team: savedTeam };
+  } catch (error) {
+    console.error('Error al crear el equipo o asociarlo al torneo:', error);
+    throw error;
+  }
+}
+
+
+
 // Crear solicitud para unirse a un equipo
 export async function requestToJoinTeam(teamId, userId) {
   try {
-    const team = await Backendless.Data.of('Teams').findById(teamId);
-    if (team.members.length >= 11) {
-      throw new Error('El equipo ya está completo');
+    // Obtener el equipo con las relaciones 'sport' y 'players'
+    const team = await Backendless.Data.of('Teams').findById(teamId, {
+      loadRelations: ['sport', 'players'], // Cargar las relaciones sport y players
+    });
+
+    // Verificar si el equipo tiene una relación con el deporte
+    if (!team.sport) {
+      throw new Error('No se pudo determinar el deporte del equipo.');
     }
 
+    // Obtener el límite de jugadores del deporte asociado
+    const maxPlayers = team.sport.maxPlayersPerTeam;
+
+    // Verificar el número actual de jugadores en el equipo
+    const currentPlayers = team.players ? team.players.length : 0;
+
+    if (currentPlayers >= maxPlayers) {
+      throw new Error(`El equipo ya alcanzó el límite de ${maxPlayers} jugadores.`);
+    }
+
+    // Agregar el nuevo jugador a la relación "players" del equipo
+    await Backendless.Data.of('Teams').addRelation(teamId, 'players', [userId]);
+
+    // Crear un registro en la tabla TeamRequests para gestionar la solicitud
     const request = {
       team: { objectId: teamId },
       user: { objectId: userId },
@@ -93,6 +153,8 @@ export async function requestToJoinTeam(teamId, userId) {
     throw error;
   }
 }
+
+
 
 
 // Enviar notificación al líder del equipo
