@@ -79,14 +79,14 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   label: {
-    width: '50%',
+    width: '100%',
     color: '#ffffff',
     fontSize: 14,
     marginBottom: 5,
     marginLeft: 10,
   },
   input: {
-    width: '50%',
+    width: '100%',
     borderWidth: 1,
     borderColor: '#ffffff',
     padding: 15,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     borderRadius: 25,
     marginTop: 20,
-    width: '50%',
+    width: '100%',
     alignItems: 'center',
   },
   loginButtonText: {
