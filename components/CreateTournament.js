@@ -191,7 +191,6 @@ export default function CreateTournament() {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -211,8 +210,8 @@ const styles = StyleSheet.create({
     padding: 12,
     marginVertical: 10,
     borderRadius: 10,
-    backgroundColor: '#1c2340',
-    color: '#ffffff',
+    backgroundColor: '#ffffff', // Fondo del TextInput
+    color: '#ffffff', // Texto blanco dentro del TextInput
   },
   label: {
     color: '#ffffff',
@@ -235,7 +234,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#1c2340',
     borderRadius: 10,
-    color: '#ffffff',
+    color: '#ffffff', // Texto blanco en el Picker
     marginVertical: 10,
     paddingHorizontal: 10,
   },
@@ -256,3 +255,4 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
+

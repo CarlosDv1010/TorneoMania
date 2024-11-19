@@ -12,12 +12,14 @@ export default function TournamentDetailsForm({
       <TextInput
         style={styles.input}
         placeholder="Nombre del Torneo"
+        placeholderTextColor={'#ffffff'}
         value={tournamentName}
         onChangeText={setTournamentName}
       />
       <TextInput
         style={styles.input}
         placeholder="Descripción del Torneo"
+        placeholderTextColor={'#ffffff'}
         value={tournamentDescription}
         onChangeText={setTournamentDescription}
         multiline
