@@ -3,6 +3,8 @@ import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ScrollView, 
 import { getEnrolledTournaments, getFeaturedTournaments, getOrganizedTournaments } from '../services/backendless';
 import LogoutButton from './LogoutButton';
 import SubscriptionsMenu from './SubscriptionsMenu';
+import logo from './imagenes/logocompleto.png';
+import appointmentreminders from './imagenes/appointment-reminders.png'
 
 export default function Home({ user, handleLogout, navigation }) {
   const [organizedTournaments, setOrganizedTournaments] = useState([]);
@@ -36,10 +38,10 @@ export default function Home({ user, handleLogout, navigation }) {
       <View style={styles.container}>
         {/* Barra de navegación */}
         <View style={styles.navbar}>
-          <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.logo} />
+          <Image source={logo} style={styles.logo} />
           <View style={styles.navButtons}>
             <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={styles.notificationIconContainer}>
-              <Image source={{ uri: 'https://via.placeholder.com/30' }} style={styles.notificationIcon} />
+              <Image source={appointmentreminders} style={styles.notificationIcon} />
             </TouchableOpacity>
             <LogoutButton onLogout={handleLogout} />
           </View>
@@ -78,19 +80,21 @@ export default function Home({ user, handleLogout, navigation }) {
           data={featuredTournaments}
           keyExtractor={(item) => item.objectId}
           renderItem={({ item }) => (
-            <View style={styles.tournamentCard}>
+            <TouchableOpacity onPress={() => handleTournamentPress( item )}>
+              <View style={styles.tournamentCard}>
               <Image source={{ uri: item.image }} style={styles.tournamentImage} />
-              <View style={styles.tournamentInfo}>
-                <Text style={styles.tournamentName}>{item.name}</Text>
-                <Text style={styles.tournamentDescription}>{item.description}</Text>
-                <TouchableOpacity
-                  style={styles.registerButton}
-                  onPress={() => navigation.navigate('TournamentRegistration', { tournamentId: item.objectId })}
-                >
-                  <Text style={styles.registerButtonText}>Registrarse</Text>
-                </TouchableOpacity>
+                <View style={styles.tournamentInfo}>
+                  <Text style={styles.tournamentName}>{item.name}</Text>
+                  <Text style={styles.tournamentDescription}>{item.description}</Text>
+                  <TouchableOpacity
+                    style={styles.registerButton}
+                    onPress={() => navigation.navigate('TournamentRegistration', { tournamentId: item.objectId })}
+                  >
+                    <Text style={styles.registerButtonText}>Registrarse</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
+            </TouchableOpacity>
           )}
           horizontal
           showsHorizontalScrollIndicator={true}
@@ -102,7 +106,8 @@ export default function Home({ user, handleLogout, navigation }) {
   data={organizedTournaments}
   keyExtractor={(item) => item.objectId}
   renderItem={({ item }) => (
-    <View style={styles.tournamentCard}>
+    <TouchableOpacity onPress={() => handleTournamentPress( item )}>
+      <View style={styles.tournamentCard}>
       <Image source={{ uri: item.image }} style={styles.tournamentImage} />
       <View style={styles.tournamentInfo}>
         <Text style={styles.tournamentName}>{item.name}</Text>
@@ -115,6 +120,7 @@ export default function Home({ user, handleLogout, navigation }) {
         </TouchableOpacity>
       </View>
     </View>
+    </TouchableOpacity>
   )}
   horizontal // Habilita el desplazamiento horizontal
   showsHorizontalScrollIndicator={true} // Muestra el indicador horizontal
