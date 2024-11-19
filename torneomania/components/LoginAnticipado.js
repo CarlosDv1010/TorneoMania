@@ -71,14 +71,14 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   label: {
-    width: '100%',
+    width: '50%',
     color: '#ffffff',
     fontSize: 14,
     marginBottom: 5,
     marginLeft: 10,
   },
   input: {
-    width: '100%',
+    width: '50%',
     borderWidth: 1,
     borderColor: '#ffffff',
     padding: 15,
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     borderRadius: 25,
     marginTop: 20,
-    width: '100%',
+    width: '50%',
     alignItems: 'center',
   },
   buttonPressed: {
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     borderRadius: 25,
     marginTop: 20,
-    width: '100%',
+    width: '50%',
     alignItems: 'center',
   },
   loginButtonText: {
