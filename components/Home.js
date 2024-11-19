@@ -109,40 +109,47 @@ export default function Home({ user, handleLogout, navigation }) {
         data={organizedTournaments}
         keyExtractor={(item) => item.objectId}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handleTournamentPress(item)}>
-            <View style={styles.tournamentCard}>
-              <Image source={{ uri: item.image }} style={styles.tournamentImage} />
-              <View style={styles.tournamentInfo}>
-                <Text style={styles.tournamentName}>{item.name}</Text>
-                <Text style={styles.tournamentDescription}>{item.description}</Text>
-                <TouchableOpacity style={styles.registerButton}>
-                  <Text style={styles.registerButtonText}>Ver información</Text>
-                </TouchableOpacity>
-              </View>
+          <View style={styles.tournamentCard}>
+            <Image source={{ uri: item.image }} style={styles.tournamentImage} />
+            <View style={styles.tournamentInfo}>
+              <Text style={styles.tournamentName}>{item.name}</Text>
+              <Text style={styles.tournamentDescription}>{item.description}</Text>
+              {/* Ahora el botón redirige, no la tarjeta */}
+              <TouchableOpacity
+                style={styles.registerButton}
+                onPress={() => handleTournamentPress(item)}
+              >
+                <Text style={styles.registerButtonText}>Ver información</Text>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
+          </View>
         )}
       />
+
+    
 
       <Text style={styles.sectionTitle}>Mis Torneos</Text>
       <FlatList
         data={enrolledTournaments}
         keyExtractor={(item) => item.objectId}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handleTournamentPress(item)}>
-            <View style={styles.tournamentCard}>
-              <Image source={{ uri: item.image }} style={styles.tournamentImage} />
-              <View style={styles.tournamentInfo}>
-                <Text style={styles.tournamentName}>{item.name}</Text>
-                <Text style={styles.tournamentDescription}>{item.description}</Text>
-                <TouchableOpacity style={styles.registerButton}>
-                  <Text style={styles.registerButtonText}>Ver información</Text>
-                </TouchableOpacity>
-              </View>
+          <View style={styles.tournamentCard}>
+            <Image source={{ uri: item.image }} style={styles.tournamentImage} />
+            <View style={styles.tournamentInfo}>
+              <Text style={styles.tournamentName}>{item.name}</Text>
+              <Text style={styles.tournamentDescription}>{item.description}</Text>
+              {/* Ahora solo el botón redirige */}
+              <TouchableOpacity
+                style={styles.registerButton}
+                onPress={() => handleTournamentPress(item)}
+              >
+                <Text style={styles.registerButtonText}>Ver información</Text>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
+          </View>
         )}
       />
+
 
       <Text style={styles.sectionTitle}>Ranking de jugadores</Text>
       <FlatList
