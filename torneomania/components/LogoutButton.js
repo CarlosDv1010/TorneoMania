@@ -19,7 +19,9 @@ export default function LogoutButton({ onLogout }) {
       <ActivityIndicator size="large" color="#ff0000" />
     </View>
   ) : (
-    <Button title="Cerrar Sesión" onPress={handlePress} color="#c70808" />
+    <View style={{ borderRadius: 10, overflow: 'hidden' }}>
+      <Button title="Cerrar Sesión" onPress={handlePress} color="#c70808" />
+    </View>
   );
 }
 
