@@ -44,12 +44,7 @@ export default function Home({ user, handleLogout, navigation }) {
           <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={styles.notificationIconContainer}>
             <Image source={{ uri: 'https://via.placeholder.com/30' }} style={styles.notificationIcon} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navButton}>
-            <Text style={styles.navButtonText}>Regístrate</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.navButton}>
-            <Text style={styles.navButtonText}>Log In</Text>
-          </TouchableOpacity>
+          <LogoutButton onLogout={handleLogout} />
         </View>
       </View>
       
@@ -163,10 +158,6 @@ export default function Home({ user, handleLogout, navigation }) {
           </View>
         )}
       />
-
-      <View style={styles.logoutButtonContainer}>
-        <LogoutButton onLogout={handleLogout} />
-      </View>
 
     </View>
   );
