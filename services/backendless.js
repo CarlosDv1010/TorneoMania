@@ -1,7 +1,7 @@
 import Backendless from 'backendless';
 
 // Inicialización de Backendless
-Backendless.initApp('BACDAFF0-9B05-4CDB-9E77-B8E78E248B5B', 'FF9258BC-61F2-468C-8E92-6381C6452922');
+Backendless.initApp('BACDAFF0-9B05-4CDB-9E77-B8E78E248B5B', '085332EE-A90D-411F-944A-06109A0E0DFA');
 
 // Función para el login
 export async function loginUser(email, password) {
