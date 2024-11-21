@@ -7,9 +7,10 @@ export default function TournamentDatePicker() {
   return (
     <View>
       <TextInput
-        style={{ borderBottomWidth: 1, padding: 10, marginBottom: 20 }}
+        style={{ borderBottomWidth: 1, padding: 10, marginBottom: 20, color: '#ffffff' }}
         placeholder="Introduce la fecha (dd/mm/yyyy)"
         placeholderTextColor="#ffffff"
+        color="#ffffff"
         value={date}
         onChangeText={setDate}
         keyboardType="numeric"

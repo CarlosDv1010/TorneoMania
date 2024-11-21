@@ -53,6 +53,7 @@ export default function CreateTournament() {
         endDate,
         description: tournamentDescription,
         prize,
+        highlighted: true,
         individualCompetition,
         groupCompetition,
         groupCount,
