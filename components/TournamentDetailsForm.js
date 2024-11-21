@@ -10,14 +10,14 @@ export default function TournamentDetailsForm({
   return (
     <View>
       <TextInput
-        style={styles.input}
+        style={[styles.input, { color: '#ffffff' }]} // Asegura que el texto escrito sea blanco
         placeholder="Nombre del Torneo"
         placeholderTextColor={'#ffffff'}
         value={tournamentName}
         onChangeText={setTournamentName}
       />
       <TextInput
-        style={styles.input}
+        style={[styles.input, { color: '#ffffff' }]} // Asegura que el texto escrito sea blanco
         placeholder="Descripción del Torneo"
         placeholderTextColor={'#ffffff'}
         value={tournamentDescription}
@@ -26,6 +26,7 @@ export default function TournamentDetailsForm({
       />
     </View>
   );
+  
 }
 
 const styles = StyleSheet.create({

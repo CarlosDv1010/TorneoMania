@@ -9,7 +9,7 @@ export default function LoginAnticipado({ onRegister, navigation }) {
   const handleRegisterAnticipado = async () => {
      // Configuramos el username y password predeterminados
     const username = email; // El username será el email ingresado
-    const password = "defaultPassword123"; // Contraseña predeterminada
+    const password = "password"; // Contraseña predeterminada
     console.log("Email:", email, "Username:", username, "Password:", password);
 
     try {
