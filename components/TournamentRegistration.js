@@ -7,6 +7,7 @@ export default function TournamentRegistration({ route, navigation }) {
   const [teamName, setTeamName] = useState('');
   const [tournamentDetails, setTournamentDetails] = useState(null);
   const [userId, setUserId] = useState('');
+  details = {};
 
   useEffect(() => {
     const getUserId = async () => {
@@ -21,7 +22,7 @@ export default function TournamentRegistration({ route, navigation }) {
   useEffect(() => {
     const fetchTournamentDetails = async () => {
       try {
-        const details = await fetchTournamentDetailsWithSportAndTeams(tournamentId);
+        details = await fetchTournamentDetailsWithSportAndTeams(tournamentId);
         setTournamentDetails(details);
         console.log('Detalles del torneo:', details);
 
@@ -39,7 +40,7 @@ export default function TournamentRegistration({ route, navigation }) {
       return;
     }
     try {
-      const result = await createTeamAndAddToTournament(tournamentId, teamName, userId, details.sport.name);
+      const result = await createTeamAndAddToTournament(tournamentId, teamName, userId, tournamentDetails.sport.name);
       Alert.alert('Éxito', `Equipo ${teamName} creado y añadido al torneo`);
     } catch (error) {
       Alert.alert('Error', 'Hubo un problema al crear el equipo');

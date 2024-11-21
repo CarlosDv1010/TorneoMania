@@ -81,11 +81,12 @@ export async function fetchTournamentDetailsWithSportAndTeams(tournamentId) {
 export async function createTeamAndAddToTournament(tournamentId, teamName, currentUserId, sportName) {
   try {
     // Obtener el deporte asociado con el nombre proporcionado
+    console.log('Buscando el deporte:', sportName);
     const sport = await Backendless.Data.of('Sports').findFirst({ where: `name = '${sportName}'` });
     if (!sport) {
       throw new Error(`El deporte '${sportName}' no existe.`);
     }
-
+    console.log('Deporte encontrado:', sport);
     // Crear el nuevo equipo
     const newTeam = {
       name: teamName,
@@ -102,10 +103,12 @@ export async function createTeamAndAddToTournament(tournamentId, teamName, curre
 
     // Establecer la relación entre el equipo y el usuario líder
     await Backendless.Data.of('Teams').addRelation(savedTeam.objectId, 'leader', [currentUserId]);
+    await Backendless.Data.of('Teams').addRelation(savedTeam.objectId, 'players', [currentUserId]);
 
     // Establecer la relación entre el torneo y el equipo
     await Backendless.Data.of('Teams').addRelation(savedTeam.objectId, 'tournament', [tournamentId]);
-
+    await Backendless.Data.of('Teams').addRelation(savedTeam.objectId, 'sport', [sport.objectId]);
+    console.log('Equipo creado y añadido al torneo:', savedTeam);
     return { team: savedTeam };
   } catch (error) {
     console.error('Error al crear el equipo o asociarlo al torneo:', error);
@@ -118,11 +121,12 @@ export async function createTeamAndAddToTournament(tournamentId, teamName, curre
 // Crear solicitud para unirse a un equipo
 export async function requestToJoinTeam(teamId, userId) {
   try {
-    // Obtener el equipo con las relaciones 'sport' y 'players'
-    const team = await Backendless.Data.of('Teams').findById(teamId, {
-      loadRelations: ['sport', 'players'], // Cargar las relaciones sport y players
-    });
+    const dataQuery = Backendless.DataQueryBuilder.create().setRelated(['sport', 'players']);
 
+    console.log('Solicitando unirse al equipo:', teamId);
+    // Obtener el equipo con las relaciones 'sport' y 'players'
+    const team = await Backendless.Data.of('Teams').findById(teamId, dataQuery);
+    console.log('Equipo encontrado:', team);
     // Verificar si el equipo tiene una relación con el deporte
     if (!team.sport) {
       throw new Error('No se pudo determinar el deporte del equipo.');
