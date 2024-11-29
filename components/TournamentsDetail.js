@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { getTournamentDetails } from '../services/backendless';
+import { getTournamentDetailsWithTeams } from '../services/backendless'; // Importa la nueva función
 
 export default function TournamentsDetail({ route, navigation }) {
   const { tournament } = route.params || {};
@@ -11,7 +11,7 @@ export default function TournamentsDetail({ route, navigation }) {
       if (!tournament || !tournament.objectId) return;
 
       try {
-        const details = await getTournamentDetails(tournament.objectId);
+        const details = await getTournamentDetailsWithTeams(tournament.objectId); // Usar la función modularizada
         setTournamentDetails(details);
       } catch (error) {
         Alert.alert('Error', 'No se pudieron obtener los detalles del torneo');
@@ -34,13 +34,26 @@ export default function TournamentsDetail({ route, navigation }) {
 
         <Text style={styles.sectionTitle}>Equipos inscritos:</Text>
         {tournamentDetails.teams.length > 0 ? (
-          <ScrollView style={styles.teamsContainer}>
+          <View style={styles.teamsContainer}>
             {tournamentDetails.teams.map((team) => (
-              <TouchableOpacity key={team.objectId} style={styles.teamButton}>
-                <Text style={styles.teamButtonText}>{team.name}</Text>
-              </TouchableOpacity>
+              <View key={team.objectId} style={styles.teamDetailsContainer}>
+                <Text style={styles.teamName}>{team.name}</Text>
+                <Text style={styles.leaderText}>
+                  <Text style={styles.boldText}>Líder:</Text> {team.leader?.username || 'Sin líder'}
+                </Text>
+                <Text style={styles.playersTitle}>Jugadores:</Text>
+                {team.players && team.players.length > 0 ? (
+                  team.players.map((player) => (
+                    <Text key={player.objectId} style={styles.playerName}>
+                      {player.username}
+                    </Text>
+                  ))
+                ) : (
+                  <Text style={styles.noPlayersText}>No hay jugadores en este equipo.</Text>
+                )}
+              </View>
             ))}
-          </ScrollView>
+          </View>
         ) : (
           <Text style={styles.noTeamsText}>No hay equipos inscritos.</Text>
         )}
@@ -58,6 +71,7 @@ export default function TournamentsDetail({ route, navigation }) {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

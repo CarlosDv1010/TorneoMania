@@ -30,6 +30,23 @@ export async function registerUser(email, password, username) {
   return usuario;
 }
 
+export async function getTeamLeader(teamId) {
+  try {
+    const teamQuery = Backendless.DataQueryBuilder.create().setRelated(['leader']);
+    const team = await Backendless.Data.of('Teams').findById(teamId, teamQuery);
+
+    if (!team.leader) {
+      throw new Error('El equipo no tiene líder asignado.');
+    }
+
+    return team.leader; // Retorna el líder del equipo
+  } catch (error) {
+    console.error(`Error al obtener el líder del equipo ${teamId}:`, error);
+    throw error;
+  }
+}
+
+
 // Obtener detalles del torneo, incluyendo equipos y cupos disponibles
 export async function getTournamentDetails(tournamentId) {
   try {
@@ -44,6 +61,50 @@ export async function getTournamentDetails(tournamentId) {
     throw error;
   }
 }
+
+export async function getTeamPlayers(teamId) {
+  try {
+    const teamQuery = Backendless.DataQueryBuilder.create().setRelated(['players']);
+    const team = await Backendless.Data.of('Teams').findById(teamId, teamQuery);
+
+    if (!team.players || team.players.length === 0) {
+      throw new Error('El equipo no tiene jugadores asignados.');
+    }
+
+    return team.players; // Retorna la lista de jugadores
+  } catch (error) {
+    console.error(`Error al obtener los jugadores del equipo ${teamId}:`, error);
+    throw error;
+  }
+}
+
+export async function getTournamentDetailsWithTeams(tournamentId) {
+  try {
+    const tournamentQuery = Backendless.DataQueryBuilder.create().setRelated(['teams']);
+    const tournament = await Backendless.Data.of('Tournaments').findById(tournamentId, tournamentQuery);
+
+    if (tournament.teams && tournament.teams.length > 0) {
+      const detailedTeams = await Promise.all(
+        tournament.teams.map(async (team) => {
+          const leader = await getTeamLeader(team.objectId); // Obtener el líder del equipo
+          const players = await getTeamPlayers(team.objectId); // Obtener los jugadores del equipo
+          return { ...team, leader, players }; // Agregar la información al equipo
+        })
+      );
+
+      tournament.teams = detailedTeams; // Reemplazar con la información detallada
+    }
+
+    console.log('Detalles del torneo con equipos:', tournament);
+
+    return tournament;
+  } catch (error) {
+    console.error('Error al obtener detalles del torneo:', error);
+    throw error;
+  }
+}
+
+
 
 export async function fetchTournamentDetailsWithSportAndTeams(tournamentId) {
   try {
